@@ -1,0 +1,129 @@
+* {
+  --primary-color: #96a38e;
+  --secondary-color: #a39e8e;
+  --contrast-white: #ffffff;
+  --contrast-black: #242424;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "VT323", monospace;
+  background-color: var(--contrast-black);
+  color: var(--contrast-white);
+  position: relative;
+  min-height: 100vh;
+}
+
+/** HEADER SECTION **/
+.header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3.125em;
+}
+
+#logo {
+  max-width: 25%;
+}
+
+#main-heading {
+  color: var(--primary-color);
+  font-size: 3.75rem;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+#main-subheading {
+  font-size: 1.875rem;
+  margin-top: 5px;
+}
+
+/** MAIN CONTENT SECTION **/
+.content-container {
+  margin-top: 3.125em;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.post-link {
+  text-decoration: none;
+  color: var(--contrast-white);
+}
+.post-link:hover {
+  cursor: pointer;
+  color: #e5e5e5;
+}
+
+.post-date {
+  color: var(--secondary-color);
+}
+
+hr {
+  border: 1px solid #323232;
+  width: 100%;
+}
+
+/** NAVIGATION SECTION **/
+.navigation-container {
+  margin-top: 3.125em;
+  padding-bottom: 6rem;
+  text-align: center;
+  font-size: 1.125rem;
+}
+
+.older-posts-link {
+  text-decoration: none;
+  color: var(--secondary-color);
+}
+.older-posts-link:hover {
+  cursor: pointer;
+  color: var(--contrast-white);
+}
+
+/** FOOTER SECTION **/
+.footer-container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  margin-top: 6.25em;
+  text-align: center;
+  font-size: 1.125rem;
+  background-color: #000000;
+  overflow: hidden;
+}
+
+#copyright {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/** RESPONSIVE DESIGN - DESKTOP **/
+@media screen and (min-width: 1000px) {
+  #logo {
+    max-width: 10%;
+  }
+
+  .content-container {
+    padding-left: 150px;
+    padding-right: 150px;
+  }
+
+  .post-link {
+    font-size: 1.875rem;
+  }
+
+  .post-date {
+    font-size: 1.5rem;
+  }
+
+  .older-posts-link {
+    font-size: 1.5rem;
+  }
+
+  #copyright {
+    font-size: 1.5rem;
+  }
+}

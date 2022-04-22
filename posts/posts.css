@@ -1,0 +1,110 @@
+* {
+  --primary-color: #96a38e;
+  --secondary-color: #a39e8e;
+  --contrast-white: #ffffff;
+  --contrast-black: #242424;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "VT323", monospace;
+  background-color: var(--contrast-black);
+  color: var(--contrast-white);
+  position: relative;
+  min-height: 100vh;
+}
+
+/** BLOG HEADER SECTION **/
+.post-header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3.125em;
+  padding-left: 15px;
+  padding-right: 15px;
+  text-align: center;
+}
+
+#post-heading {
+  color: var(--primary-color);
+  font-size: 3.75rem;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+#post-subheading {
+  font-size: 1.875rem;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+#post-date {
+  font-size: 1.5rem;
+  color: var(--secondary-color);
+  margin-top: 10px;
+}
+
+/** BLOG CONTENT SECTION **/
+.blog-content-container {
+  margin-top: 3.125em;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+hr {
+  border: 1px solid #323232;
+  width: 100%;
+}
+
+/** NAVIGATION SECTION **/
+.navigation-container {
+  margin-top: 3.125em;
+  padding-bottom: 6rem;
+  text-align: center;
+  font-size: 1.125rem;
+}
+
+.homepage-link {
+  text-decoration: none;
+  color: var(--secondary-color);
+}
+.homepage-link:hover {
+  cursor: pointer;
+  color: #ffffff;
+}
+
+/** FOOTER SECTION **/
+.footer-container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  margin-top: 6.25em;
+  text-align: center;
+  font-size: 1.125rem;
+  background-color: #000000;
+  overflow: hidden;
+}
+
+#copyright {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/** RESPONSIVE DESIGN - DESKTOP **/
+@media screen and (min-width: 1000px) {
+  .blog-content-container {
+    padding-left: 150px;
+    padding-right: 150px;
+  }
+
+  .homepage-link {
+    font-size: 1.5rem;
+  }
+
+  #copyright {
+    font-size: 1.5rem;
+  }
+}
