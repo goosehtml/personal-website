@@ -56,13 +56,13 @@ body {
 
 .content-subheading {
   color: var(--secondary-color);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 1.5rem;
   line-height: 1.5;
 }
 
 .content-text {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 1.125rem;
   line-height: 1.5;
 }
@@ -74,6 +74,12 @@ body {
 .content-link {
   color: #ffffff;
   text-decoration-style: dotted;
+}
+
+.content-list {
+  font-family: "Roboto", sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.5;
 }
 
 code {
@@ -130,6 +136,10 @@ code {
   }
 
   .content-text {
+    font-size: 1.5rem;
+  }
+
+  .content-list {
     font-size: 1.5rem;
   }
 
