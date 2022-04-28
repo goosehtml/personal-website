@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/base16/tomorrow-night.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>Using npm modules on the client-side with webpack</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">Using npm modules on the client-side with webpack</h1>
+        <p id="post-subheading">
+          Brief overview of module bundlers and installing webpack
+        </p>
+        <p id="post-date">Published Apr. 28, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">Why are module bundlers necessary?</h3>
+        <p class="content-text">
+          Years ago, building a website typically only required HTML, CSS, and some JavaScript.  As technology advanced,
+          so did the complexity of websites.  Nowadays, modern web applications use additional technologies like
+          CSS preprocessors, frameworks, and third-party modules.  These technologies make web development easier but
+          also present a lot of new problems.
+        </p>
+
+        <p class="content-text">
+          The size of modern web applications can get pretty big, which means load times and performance can drastically slow down.
+          Additionally, everybody uses different web browsers, so you also need to make sure your web application is compatible
+          across multiple browsers, which can be a nightmare.
+        </p>
+
+        <p class="content-text">
+            To top it off, creating modern web applications usually means you'll be using modules.  npm is the
+            default package manager for node.js, the server-side runtime environment.  Since JavaScript is
+            client-side, this makes loading modules tricky; a lot of dependencies use the CommonJS syntax, which doesn't 
+            work with the modern ES6 syntax.  If you try importing an npm module into a client-side JavaScript application,
+            you'll probably get an error like this in the console:
+        </p>
+        <img class="content-image" src="./images/module-error.png" alt="screenshot of console error">
+        <p class="content-text">
+          ...luckily, module bundlers fix all these issues.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">How do module bundlers work?</h3>
+        <p class="content-text">
+          A module bundler is a tool that gets around these problems by implementing a "build" step, which bundles all your
+          files into one, browser-compatible JavaScript file.  There's several module bundlers on the Internet, but the most popular is
+          webpack.  In this guide, I'll show you how to install and configure webpack so you can use modules on
+          the client-side.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Installing webpack</h3>
+        <p class="content-text">
+          webpack can easily be installed as a dependency through npm.  Before installing webpack, create a new project in VS Code.  By default,
+          webpack will assume the entry point of your project is <code class="inline-code">src/index.js</code>, so create a folder with that file
+          and then open the Terminal; install webpack by typing this into the command line:
+        </p>
+        <pre><code class="language-shell">
+$ npm install --save-dev webpack webpack-cli
+        </code></pre>
+        <p class="content-text">
+          ...webpack is installed as a development dependency because it's not necessary for the final production build.
+          Next, check the <code class="inline-code">package.json</code> file to make sure everything installed successfully...
+        </p>
+        <img class="content-image" src="./images/webpack-install.png" alt="screenshot package.json file">
+        <p class="content-text">
+          ...after this, use a task runner by creating an npm script in the <code class="inline-code">package.json</code>
+          file...
+        </p>
+        <pre><code class="language-json">
+// ...
+"scripts": {
+    "build": "webpack"
+},
+// ...
+        </code></pre>
+        <p class="content-text">
+          ...this script will execute the webpack command whenever you type <code class="inline-code">npm run build</code> into the
+          command line.  webpack will then analyze the code inside the <code class="inline-code">index.js</code> file and compile it.  By default,
+          webpack will output the result in <code class="inline-code">dist/main.js</code>.  Now, instead of having
+          <code class="inline-code">index.js</code> as the main path in the <code class="inline-code">script</code> tag of your HTML file, change
+          it to <code class="inline-code">../dist/main.js</code>.  Finally, run the build command.
+        </p>
+
+        <p class="content-text">
+          Congratulations, you just bundled your first module!  Now you can use npm packages on the client-side without worrying about
+          getting any errors.  To test this out, I'll use the <code class="inline-code">moment.js</code> package as an example.  moment.js
+          is a simple library for formatting dates in a more readable manner.  I installed this module by running
+          <code class="inline-code">npm install moment</code> in the command line.  Next, I'll import the library into my
+          <code class="inline-code">index.js</code> file using the CommonJS syntax, like so:
+        </p>
+        <pre><code class="language-javascript">
+// index.js          
+const moment = require("moment");
+        </code></pre>
+        <p class="content-text">
+          ...after importing the library, I can use one of the included methods.  The method I'm using returns the amount of
+          hours it's been since the day started...
+        </p>
+        <pre><code class="language-javascript">
+// index.js
+console.log(moment().startOf("day").fromNow());
+        </code></pre>
+        <p class="content-text">
+          ...now, if I open my browser and check Chrome DevTools, I can see the module works without throwing any errors...
+        </p>
+        <img class="content-image" src="./images/module-working.png" alt="screenshot of module working in browser">
+        <p class="content-text">
+          ...easy!  With webpack set up, you can use
+          just about any npm module on the client-side.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Advanced webpack configuration</h3>
+        <p class="content-text">
+          The great thing about webpack is that it isn't just limited to getting rid of those annoying "<code class="inline-code">require</code>
+          is not defined" messages.  webpack also allows you to generate source maps, as well as use plugins and loaders, which can be used
+          for preprocessing assets or CSS files.  webpack can read these options from a configuration file named
+          <code class="inline-code">webpack.config.js</code>, which you create in the root directory of your project.  To learn more
+          about manually configuring webpack, you can visit the
+          <a class="content-link" href="https://webpack.js.org/configuration/">official webpack documentation</a>.
+        </p>
+
+
+  
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
