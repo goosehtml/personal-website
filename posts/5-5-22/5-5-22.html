@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/base16/tomorrow-night.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>Creating a CLI with Node.js</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">Creating a CLI with Node.js</h1>
+        <p id="post-subheading">
+          Tutorial on how to create your own CLI application from scratch and publish it to npm
+        </p>
+        <p id="post-date">Published May 5, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">What's a CLI?</h3>
+        <p class="content-text">
+          A CLI (command line interface) is a program that accepts text input to execute a certain command.  Back when
+          old computers terminals were still around, using a CLI was the only way to access and control a machine.  Nowadays, almost everything
+          is a GUI.  A regular user isn't gonna' use <code class="inline-code">mkdir</code> to create a new folder when they can just
+          right-click and hit "New Folder", but if you're reading this article, you're not a regular user — you're probably a software
+          developer or system administrator.  If that's the case, a CLI is your second home.
+        </p>
+
+        <p class="content-text">
+          For a developer or sysadmin, CLIs are used for various things: installing software, configuring, accessing network settings, etc.
+          Additionally, they're just fun to use, which is why I decided to build my own CLI application using Node.js.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Prerequisites</h3>
+        <p class="content-text">
+          Believe it or not, building a CLI application is pretty simple; in this tutorial, I'll show you
+          exactly how you can build your own.  Before starting, there's a few things you'll need:
+          <ul class="content-list">
+            <li class="content-list"><a class="content-link" href="https://nodejs.org/en/">Node.js</a> - Node.js is a server-side
+            runtime environment that lets you run JavaScript outside a web browser.</li>
+            <li><a class="content-link" href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm">npm</a> - By default,
+            npm comes pre-installed with Node.js.  If you already have Node.js, chances are, you also have npm.  To check if npm is
+            installed on your machine, type <code class="inline-code">npm -v</code> into the command line.</li>
+            <li>Terminal emulator - A CLI runs on a terminal emulator, so this prerequisite is pretty obvious.  There's many different
+            terminal emulators to choose from, but since this project will be built inside VS Code, you can use it's built-in Terminal.
+            </li>
+          </ul>
+        </p>
+
+        <p class="content-text">
+            ...once you have everything, initialize a new directory on your machine with the name of your project and open it on VS Code.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Creating an npm package</h3>
+        <p class="content-text">
+          In order to create a CLI application, there's a few dependencies you need.  After making your application, I'll also teach you how
+          to deploy your CLI as an npm package.  To do that, you first need to set up a new package:
+        </p>
+        <pre><code class="language-shell">
+$ npm init
+        </code></pre>
+        <p class="content-text">
+          ...this will ask you a few questions about your project before initializing a new package.  Once that's complete, you should have a <code class="inline-code">package.json</code>
+          file.  By default, dependencies are imported using the CommonJS syntax (<code class="inline-code">require</code>).  For this project, I want to import the
+          dependencies with the ES6 Modules syntax (<code class="inline-code">import</code>).  To change this, open the <code class="inline-code">package.json</code>
+          file and set a <code class="inline-code">type</code>...
+        </p>
+        <pre><code class="language-json">
+// ...            
+"type": "module",
+// ...
+        </code></pre>
+        <p class="content-text">
+          ...next, add an npm script to run the program.  The <code class="inline-code">.js</code> filename will be whatever file holds your application.
+          In my case, the CLI will live inside a file called <code class="inline-code">devtools.js</code>...
+        </p>
+        <pre><code class="language-json">
+// ...            
+"scripts": {
+    "start": "node devtools.js"
+  },
+// ...
+        </code></pre>
+        <p class="content-text">
+          ...finally, add a key/value pair for <code class="inline-code">bin</code>.  Anything listed in the <code class="inline-code">bin</code>
+          section of the <code class="inline-code">package.json</code> file will be made available as a command...
+        </p>
+        <pre><code class="language-json">
+// ...            
+"bin": {
+    "devtools": "./devtools.js"
+  },
+// ...
+        </code></pre>
+        <p class="content-text">
+          ...this will allow me to run the CLI application by simply typing <code class="inline-code">devtools</code> into the command line.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Installing the dependencies</h3>
+        <p class="content-text">
+          Now that everything is set up, you can install the dependencies via npm.  Typically, a CLI application accepts user input.  In order to make
+          this possible, you'll need to install the <a class="content-link" href="https://www.npmjs.com/package/inquirer">inquirer.js</a> package.  For a
+          bare-bones CLI, inquirer alone should suffice, but since I want my CLI application to have visual flair, I'll be installing additional dependencies.
+          These dependencies will add things like ASCII art, animations, and colorful text.  To install everything, type this into the command line:
+        </p>
+        <pre><code class="language-shell">
+$ npm install inquirer chalk chalk-animation figlet
+        </code></pre>
+        <p class="content-text">
+          ...you can check the <code class="inline-code">package.json</code> file to make sure everything was installed.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Setting up your JavaScript file</h3>
+        <p class="content-text">
+          Now that you've set up an npm package and installed all the necessary dependencies, you can finally start creating your CLI.  In your project
+          directory, create a <code class="inline-code">.js</code> file with a filename that matches the one you chose as a path in your
+          <code class="inline-code">package.json</code> file.  In my case, the file will be named <code class="inline-code">devtools.js</code>.
+        </p>
+
+        <p class="content-text">
+          Inside the file, type this on the very first line:
+        </p>
+        <pre><code class="language-javascript">
+#!/usr/bin/env node
+        </code></pre>
+        <p class="content-text">
+          ...this is called a "shebang", and it should always be included when writing a command line script; it basically tells the OS to execute the code with
+          Node.js.  Next, import all the dependencies...
+        </p>
+        <pre><code class="language-javascript">
+import chalk from "chalk";
+import inquirer from "inquirer";
+import figlet from "figlet";
+import chalkAnimation from "chalk-animation";
+        </code></pre>
+        <p class="content-text">
+          ...now, all the installed dependencies are ready to use.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Creating a prompt with inquirer.js</h3>
+        <p class="content-text">
+          In order to process user input, you need to launch the prompt interface by using the <code class="inline-code">.prompt()</code> method,
+          which takes in two parameters: questions (as an array), and answers (as an object).  As an example, take a look at the CLI menu I made for
+          my DevTools application:
+        </p>
+        <pre><code class="language-javascript">
+async function devToolsMenu() {
+  console.clear();
+  const answers = await inquirer.prompt({
+    name: "chosenTool",
+    type: "list",
+    message: "WELCOME TO DEVTOOLS!  SELECT A TOOL TO USE:",
+    choices: [
+      "Random Color Generator",
+      "Decimal-to-Binary Converter",
+      "Countdown Timer",
+      "Digital Clock",
+    ],
+  });
+
+  let chosenOption = answers.chosenTool;
+  switch (chosenOption) {
+    case "Random Color Generator":
+      runRandomColorGenerator();
+      break;
+    case "Decimal-to-Binary Converter":
+      runDecimalToBinaryConverter();
+      break;
+    case "Countdown Timer":
+      runCountdownTimer();
+      break;
+    case "Digital Clock":
+      runDigitalClock();
+      break;
+  }
+}
+        </code></pre>
+        <p class="content-text">
+          ...everything is inside the asynchronous function <code class="inline-code">devToolsMenu</code>, which I can call at any time to display
+          the prompt.  The <code class="inline-code">answers</code> object contains question-related values, such as the type of prompt, the question to print,
+          and the choices.  These can be found on the <a class="content-link" href="https://www.npmjs.com/package/inquirer">documentation</a> page for inquirer.js.
+        </p>
+
+        <p class="content-text">
+          In simple terms, the code snippet above translates to: "Create a list prompt that gives the user four tools
+          to choose from.  Whatever tool they choose, store that decision inside a variable called <code class="inline-code">chosenOption</code>,
+          and create a <code class="inline-code">switch</code> statement with that variable in order to determine which tool to launch."
+        </p>
+
+        <p class="content-text">
+          If the <code class="inline-code">devToolsMenu</code> function is invoked and I run <code class="inline-code">devtools</code> in the Terminal, the CLI
+          application should look something like this:
+        </p>
+        <img class="content-image" src="./images/prompt.jpg" alt="screenshot of terminal cli prompt">
+        <p class="content-text">
+          ...pretty cool, huh?
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Using figlet.js and chalk.js</h3>
+        <p class="content-text">
+          As stated earlier, creating a CLI with only inquirer.js is totally possibly, but you'll probably end up with a plain and boring application.  To fix this, I'll
+          show you how to style your application with the other installed dependencies.  As an example, I'll use the function for my countdown timer tool:
+        </p>
+        <pre><code class="language-javascript">
+async function runCountdownTimer() {
+  console.clear();
+  const answers = await inquirer.prompt({
+    name: "timerDuration",
+    type: "number",
+    message: "Set a countdown timer for how many seconds?",
+    validate: (answer) => {
+      if (isNaN(answer)) {
+        return `Invalid number.  Press ${chalk
+          .rgb(255, 255, 255)
+          .bold("control + K")} and try again.`;
+      }
+      return true;
+    },
+  });
+
+  let seconds = answers.timerDuration;
+  console.clear();
+  console.log(seconds);
+
+  let timer = setInterval(() => {
+    console.clear();
+    seconds--;
+    console.log(seconds);
+
+    if (seconds == 0) {
+      console.clear();
+      clearInterval(timer);
+      figlet("TIME!", function (err, data) {
+        if (err) {
+          console.log("Could not load 'TIME!' ASCII art...");
+        }
+        console.log(chalk.redBright.bold(data));
+      });
+    }
+  }, 1000);
+}
+        </code></pre>
+        <p class="content-text">
+          ...here, I've created another prompt, except this one has a <code class="inline-code">type</code> of <code class="inline-code">number</code>,
+          which lets the user input a number.  inquirer.js also eases the process of validating data with it's <code class="inline-code">validate</code>
+          property, which takes a function as a value.  Inside that function, the application checks whether the user input was a number or not. If it was,
+          it'll return as true and start the countdown timer; otherwise, it'll return as false and display an error message.
+        </p>
+
+        <p class="content-text">
+          By taking a closer look at my function, you can see the use of the figlet.js and chalk.js dependencies.  figlet.js allows you to turn
+          regular text into ASCII art, whereas chalk.js gives your text color.  Here's how I implemented both dependencies into my countdown timer tool:
+        </p>
+        <pre><code class="language-javascript">
+figlet("TIME!", function (err, data) {
+  if (err) {
+    console.log("Could not load 'TIME!' ASCII art...");
+  }
+  console.log(chalk.redBright.bold(data));
+});
+
+        </code></pre>
+        <p class="content-text">
+          ...calling the <code class="inline-code">figlet</code> object as a function takes three parameters: the input text, options, and a callback function.
+          Here, I've omitted the options parameter, using only the input text and callback function.  Once the countdown timer reaches 0,
+          <code class="inline-code">TIME!</code> will be displayed in the Terminal in the form of ASCII art.  To style it even further, I combined figlet.js
+          with chalk.js to make the text bright-red...
+        </p>
+        <img class="content-image" src="./images/time-ascii.jpg" alt="screenshot of ascii art">
+        <p class="content-text">
+          ...now that's flashy, but I think I can make the application look even better!
+        </p>
+
+        <br>
+        <h3 class="content-subheading">chalk-animation.js — the icing on top</h3>
+        <p class="content-text">
+          To finalize my CLI application, I decided to add a loading screen whenever the application launches.  Achieving this was simple through the
+          implementation of a <code class="inline-code">setTimeout</code> function that invokes the menu function after 2 seconds:
+        </p>
+        <pre><code class="language-javascript">
+figlet("DEVTOOLS", function (err, data) {
+  console.clear();
+  if (err) {
+    console.log("Could not load 'DEVTOOLS' ASCII art...");
+  }
+
+  const loadingMenuScreen = chalkAnimation.rainbow(data);
+  loadingMenuScreen.start();
+
+  setTimeout(() => {
+    loadingMenuScreen.stop();
+    devToolsMenu();
+  }, 2000);
+});
+        </code></pre>
+        <p class="content-text">
+          ...I wanted the loading screen to display the application name as ASCII art by using figlet.js again.  To improve the loading screen even further,
+          I decided to use the chalk-animation.js dependency, which animates text.  It comes with a few different animations, but my favorite was the
+          <code class="inline-code">rainbow</code> effect...
+        </p>
+        <img class="content-image" src="./images/animation.gif" alt="gif of animated loading screen">
+        <p class="content-text">
+          ...needless to say, I was quite satisfied!
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Using your CLI from anywhere</h3>
+        <p class="content-text">
+          By default, your application will only run in the project directory.  In order to execute your CLI from anywhere in the terminal emulator,
+          type this into the command line:
+        </p>
+        <pre><code class="language-shell">
+$ sudo npm link
+        </code></pre>
+        <p class="content-text">
+          ...this will ask for your password since it's a root user command.  Now, your CLI can be executed from anywhere by using the command you
+          set inside <code class="inline-code">bin</code>.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Publishing your package to npm</h3>
+        <p class="content-text">
+          Now that your application is complete, you can publish it to npm for the world to use.  In order to do this, you first need to create an
+          npm account, which you can do <a class="content-link" href="https://www.npmjs.com/signup">here</a>.  Once you've made an account, go back
+          to your project and type this into the command line:
+        </p>
+        <pre><code class="language-shell">
+$ npm login
+        </code></pre>
+        <p class="content-text">
+          ...this will prompt you to enter your username, password, and email.  Make sure you've confirmed your email address and set up 2FA before
+          attempting to publish a package, otherwise, you might run into issues.  The name of your npm package will match that of the
+          <code class="inline-code">name</code> value in <code class="inline-code">package.json</code>.  If a package with that name already exists
+          on npm, you'll have to rename it.  Finally, publish the package...
+        </p>
+        <pre><code class="language-shell">
+$ npm publish
+        </code></pre>
+        <p class="content-text">
+          ...all done!  Your CLI application should now be available as a package on the npm registry!
+        </p>
+
+        <p class="content-text">
+          If you're interested in checking out my DevTools application, you can find it
+          <a class="content-link" href="https://www.npmjs.com/package/devtools-rgui">here</a> as an npm package.  Alternatively, you can also
+          grab a copy of it from the <a class="content-link" href="https://github.com/renderGUI/dev-tools">Github repository</a>!
+        </p>  
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
