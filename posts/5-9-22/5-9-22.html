@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/base16/tomorrow-night.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>The synchronous nature of JavaScript</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">The synchronous nature of JavaScript</h1>
+        <p id="post-subheading">
+          Covering one of the most misunderstood and difficult-to-grasp concepts in JavaScript
+        </p>
+        <p id="post-date">Published May 9, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">A peek inside synchronous code</h3>
+        <p class="content-text">
+          Whenever you're driving a car, it's not often that you think about what's happening under the hood; most people don't
+          care — their only concern is whether the car runs or not.  Similarly, a lot of developers approach JavaScript with
+          the same mentality: "I don't care what's going on in the background, so long as my code runs."
+        </p>
+
+        <p class="content-text">
+          Even though you're not expected to know everything, it is crucial to at least understand how JavaScript code
+          gets executed.  By default, JavaScript is a synchronous language, meaning that every line of code gets executed
+          one-by-one.  This makes it a "single-threaded" language.  A good way to show this synchronous nature is through functions:
+        </p>
+        <pre><code class="language-javascript">
+console.log('a');
+console.log('b');
+console.log('c');
+
+/*
+a
+b
+c
+*/
+        </code></pre>
+        <p class="content-text">
+          ...in JavaScript, normal functions are synchronous.  <code class="inline-code">console.log()</code> is a function,
+          that when invoked, prints out a message.  Here, you can see three letters printed out in the same order they were
+          invoked, as expected.  Because JavaScript is synchronous, execution will always go something like this...
+        </p>
+        <ol class="content-list">
+            <li class="content-list">JavaScript will reach the first function and invoke it, printing out <code class="inline-code">a</code>.</li>
+            <li class="content-list">JavaScript will move to the second function and invoke it, printing out <code class="inline-code">b</code>.</li>
+            <li class="content-list">JavaScript will move to the last function and invoke it, printing out <code class="inline-code">c</code>.</li>
+        </ol>
+        <p class="content-text">
+          ...no matter how many times this code snippet is executed, it'll always run in the same order, from top-to-bottom.
+          This, in essence, is the nature of synchronous code.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Event queue and event loop</h3>
+        <p class="content-text">
+            Since JavaScript is single-threaded, it can only execute one thing at a time.  If you click a button on a website that does
+            something, the thread will handle that task; if, after clicking that button, you immediately click another button,
+            JavaScript will make a "mental note" to execute that task next.  This process is referred to as the <i>event queue</i>.  If there's
+            tasks in the event queue, JavaScript will execute each one individually in corresponding order until the event queue is empty.
+            Think of the event queue as a "to-do" list for the thread.
+        </p>
+
+        <p class="content-text">
+            The process of continuously checking this "to-do" list is called the <i>event loop</i>.  If the event queue is empty,
+            the thread "goes to sleep", but once an event is fired, the thread starts working again.  This synchronous behavior comes with
+            a few problems.  What if you wanna' fetch data from an API?  An action like this might take a while; with synchronous code,
+            everything after that request will have to wait until the data is received before it can continue executing the rest of the code.
+            As you might imagine, this can drastically slow down performance.  Luckily, this is where asynchronous JavaScript shines.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Asynchronous JavaScript</h3>
+        <p class="content-text">
+            Asynchronous code is code that can start something now and finish it later; it governs how you perform tasks that take a
+            while to do, such as fetching data from an API.  In a nutshell, asynchronous code allows the program to be executed immediately,
+            whereas synchronous code will block further execution of the remaining code until it finishes the current task.  One example of
+            asynchronous code in action is the <code class="inline-code">setTimeout()</code> function:
+        </p>
+        <pre><code class="language-javascript">
+setTimeout(() => {
+  console.log('a')
+}, 2000);
+
+console.log('b');
+console.log('c');
+        </code></pre>
+        <p class="content-text">
+            ...the <code class="inline-code">setTimeout()</code> function takes a function that'll execute after a specified amount of time.  In this
+            example, <code class="inline-code">a</code> will be printed out after 2 seconds.  Someone with no understanding of asynchronous code
+            might assume the execution will look like this...
+        </p>
+        <ol class="content-list">
+             <li class="content-list">JavaScript will wait 2 seconds, then print <code class="inline-code">a</code>.</li>
+             <li class="content-list"><code class="inline-code">b</code> gets printed.</li>
+             <li class="content-list"><code class="inline-code">c</code> gets printed.</li>
+        </ol>
+        <p class="content-text">
+            ...but this assumption is incorrect.  Since <code class="inline-code">setTimeout()</code> is an asynchronous function, JavaScript
+            will queue the inner function and move on to execute the rest of the code; once 2 seconds have passed, JavaScript will return to that
+            function and execute it, so in actuality, the execution ends up looking more like this...
+        </p>
+        <ol class="content-list">
+             <li class="content-list">JavaScript sees that <code class="inline-code">a</code> should be executed after 2 seconds.</li>
+             <li class="content-list">JavaScript adds that task to the queue and moves on to execute the rest of the code.</li>
+             <li class="content-list"><code class="inline-code">b</code> gets printed.</li>
+             <li class="content-list"><code class="inline-code">c</code> gets printed.</li>
+             <li class="content-list">2 seconds have passed.  Time to go back and execute that queued task now.</li>
+             <li class="content-list"><code class="inline-code">a</code> gets printed.</li>
+        </ol>
+        <p class="content-text">
+            ...with asynchronous code, the thread pretty much says "I'm not gonna' sit here and wait for this —  I got other things to do!  I'll
+            come back to this when it's ready."  This ability to navigate the code freely is part of what makes asynchronous JavaScript so powerful.
+        </p>
+
+        <p class="content-text">
+            That's the difference between synchronous and asynchronous code.  Synchronous code is executed line-by-line, top-to-bottom, whereas
+            asynchronous code can freely move to the next line of code before the previous one has executed.  Asynchronous code is always "shoved aside" so synchronous
+            code can run first.
+        </p>
+
+        <p class="content-text">
+            For a more in-depth and visual explanation on the event loop, I highly recommend this amazing presentation by Philip Roberts:
+        </p>
+        <ul class="content-list">
+            <li><a class="content-link" href="https://www.youtube.com/watch?v=8aGhZQkoFbQ">What the heck is the event loop anyway? | Philip Roberts | JSConf EU</a></li>
+        </ul>
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
