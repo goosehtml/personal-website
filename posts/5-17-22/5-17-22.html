@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/base16/tomorrow-night.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>How to use .map(), .reduce(), and .filter()</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">How to use .map(), .reduce(), and .filter()</h1>
+        <p id="post-subheading">
+          A look at three different higher-order functions that make manipulating arrays much easier
+        </p>
+        <p id="post-date">Published May 17, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">Array methods</h3>
+        <p class="content-text">
+          JavaScript has plenty of built-in methods, with several being used to manipulate arrays.  For instance,
+          the <code class="inline-code">.includes()</code> method checks whether a specified element exists within an array:
+        </p>
+        <pre><code class="language-javascript">
+const myArray = ['cat', 'dog', 'mouse'];
+
+console.log(myArray.includes('dog')); // true
+console.log(myArray.includes('cow')); // false
+        </code></pre>
+        <p class="content-text">
+          ...this is only one of the many convenient array methods JavaScript offers; a full list of them can be found on
+          <a class="content-link" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">MDN Web Docs</a>.
+        </p>
+
+        <p class="content-text">
+          Remembering every single method is impossible, but there are three methods you should
+          definitely know: <code class="inline-code">.map()</code>, <code class="inline-code">.filter()</code>, and
+          <code class="inline-code">.reduce()</code>.  These three methods are also referred to as <i>higher-order functions</i>.
+          A higher-order function is a function that operates on another function, either by taking it as an argument or returning it.
+          This article will cover all three of these higher-order functions and explain how they work; let's begin
+          with the <code class="inline-code">.map()</code> function.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Using .map()</h3>
+        <p class="content-text">
+            Here, I have an array called <code class="inline-code">people</code>, which is full of objects; each object holds a property of <code class="inline-code">name</code>
+            and <code class="inline-code">age</code>:
+        </p>
+        <pre><code class="language-javascript">
+const people = [
+  {
+    name: "John",
+    age: 22,
+  },
+  {
+    name: "Jane",
+    age: 12,
+  },
+  {
+    name: "Jack",
+    age: 45,
+  },
+  {
+    name: "Jill",
+    age: 73,
+  },
+];
+        </code></pre>
+        <p class="content-text">
+            ...next,  I want to loop over this array in order to retrieve all the <code class="inline-code">name</code>
+            values from each object, then store each value inside an empty array.  Traditionally, this can be
+            accomplished by initializing an empty array and using a <code class="inline-code">for</code> loop to
+            grab each <code class="inline-code">name</code> value.  Then, each value is pushed into the empty array by
+            using the <code class="inline-code">.push()</code> method...
+        </p>
+        <pre><code class="language-javascript">
+const onlyNames = [];
+for (let i = 0; i < people.length; i++) {
+  onlyNames.push(people[i].name);
+}
+
+console.log(onlyNames);
+// ['John', 'Jane', 'Jack', 'Jill']
+        </code></pre>
+        <p class="content-text">
+            ...this works perfectly fine, but it's quite a bit of code.  To fix this, I'll use the
+            <code class="inline-code">.map()</code> function instead...
+        </p>
+        <pre><code class="language-javascript">
+const onlyNames = people.map((individual) => {
+  return individual.name;
+});
+
+console.log(onlyNames);
+// ['John', 'Jane', 'Jack', 'Jill']
+        </code></pre>
+        <p class="content-text">
+            ...the <code class="inline-code">.map()</code> function creates a new array by transforming every element in an array
+            individually.  It takes in another function, also known as a "callback function"; the callback function takes
+            a parameter that represents the current element being processed in the array, which in this case
+            is <code class="inline-code">individual</code>.  Finally, the <code class="inline-code">name</code> of each
+            <code class="inline-code">individual</code> is returned and stored inside an array called
+            <code class="inline-code">onlyNames</code>.
+        </p>
+
+        <p class="content-text">
+            Despite both code snippets doing the exact same thing, the logic greatly differs.  In the
+            <code class="inline-code">.map()</code> function, the only logic being explicitly passed is
+            <code class="inline-code">return individual.name</code>.  Unlike the former example, you don't have to initialize an empty array,
+            create a loop, or push elements into the array — the <code class="inline-code">.map()</code> function
+            handles everything.  This makes the code much more concise, improves reusability, and reduces the
+            chances of bugs.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Using .filter()</h3>
+        <p class="content-text">
+          The next higher-order function I'll cover is <code class="inline-code">.filter()</code>.  This function creates a new array by removing elements
+          that don't match the specified criteria.  As an example, I'll use the same <code class="inline-code">people</code> object from the previous explanation:
+        </p>
+        <pre><code class="language-javascript">
+const people = [
+  {
+    name: "John",
+    age: 22,
+  },
+  {
+    name: "Jane",
+    age: 12,
+  },
+  {
+    name: "Jack",
+    age: 45,
+  },
+  {
+    name: "Jill",
+    age: 73,
+  },
+];
+        </code></pre>
+        <p class="content-text">
+          ...next, I want to create an array that only holds the names of those with an <code class="inline-code">age</code>
+          greater than 25.  Traditionally, this can be accomplished like this...
+        </p>
+        <pre><code class="language-javascript">
+const onlyOldPeople = [];
+for (let i = 0; i < people.length; i++) {
+  if (people[i].age > 25) {
+    onlyOldPeople.push(people[i].name);
+  }
+}
+
+console.log(onlyOldPeople);
+/*
+[
+  {
+    name: "Jack",
+    age: 45,
+  },
+  {
+    name: "Jill",
+    age: 73,
+  },
+];
+*/
+        </code></pre>
+        <p class="content-text">
+          ...the <code class="inline-code">if</code> conditional statement will search for anyone older than <code class="inline-code">25</code>
+          and add them to the empty array.  Now, I'll accomplish the same thing with the <code class="inline-code">.filter()</code> function...
+        </p>
+        <pre><code class="language-javascript">
+const onlyOldPeople = people.filter((individual) => {
+  return individual.age > 25;
+});
+
+console.log(onlyOldPeople);
+/*
+[
+  {
+    name: "Jack",
+    age: 45,
+  },
+  {
+    name: "Jill",
+    age: 73,
+  },
+];
+*/
+        </code></pre>
+        <p class="content-text">
+          ...just like with the <code class="inline-code">.map()</code> function, the <code class="inline-code">.filter()</code>
+          function is much more concise with less logic — have a look at both code snippets side-by-side...
+        </p>
+        <pre><code class="language-javascript">
+// Traditional way
+const onlyOldPeople = [];
+for (let i = 0; i < people.length; i++) {
+  if (people[i].age > 25) {
+    onlyOldPeople.push(people[i].name);
+  }
+}
+
+// .filter() way
+const onlyOldPeople = people.filter((individual) => {
+  return individual.age > 25;
+});
+        </code></pre>
+        <p class="content-text">
+          ...furthermore, since the the <code class="inline-code">.filter()</code> function only contains a single line of code,
+          it can be condensed even further...
+        </p>
+        <pre><code class="language-javascript">
+// Traditional way
+const onlyOldPeople = [];
+for (let i = 0; i < people.length; i++) {
+  if (people[i].age > 25) {
+    onlyOldPeople.push(people[i].name);
+  }
+}
+
+// .filter() way
+const onlyOldPeople = people.filter(individual => individual.age > 25);
+        </code></pre>
+        <p class="content-text">
+          ...now you're looking at 141 characters compared to 71 characters — a 50% reduction in code size!  It may not seem like much,
+          but when you're working on bigger projects, the difference becomes significant, especially with flexibility.
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Using .reduce()</h3>
+        <p class="content-text">
+          The next higher-order function you should be familiar with is <code class="inline-code">.reduce()</code>.
+          This function takes all the elements inside an array and "reduces" them into a single value.  For this example,
+          I'll create an array of objects, with each object holding an <code class="inline-code">amount</code> property
+          with different numbers:
+        </p>
+        <pre><code class="language-javascript">
+const money = [
+  {
+    amount: 223,
+  },
+  {
+    amount: 342,
+  },
+  {
+    amount: 649,
+  },
+  {
+    amount: 195,
+  },
+  {
+    amount: 477,
+  },
+];
+        </code></pre>
+        <p class="content-text">
+          ...with the data given, I want to create a function that returns the sum of each
+          <code class="inline-code">amount</code>.  Traditionally, that would be accomplished like this...
+        </p>
+        <pre><code class="language-javascript">
+let sum = 0;
+for(let i = 0; i < money.length; i++) {
+  sum += money[i].amount;
+}
+
+console.log(sum);
+// 1886
+        </code></pre>
+        <p class="content-text">
+          ...<code class="inline-code">sum</code> is initialized with a value of <code class="inline-code">0</code>
+          but increases after each iteration.  Simple enough, right?  Now, I'll do the exact same thing using the
+          <code class="inline-code">.reduce()</code> function.
+          Unlike the <code class="inline-code">.map()</code> and <code class="inline-code">.filter()</code>
+          functions, the <code class="inline-code">.reduce()</code> function works a little differently.
+          While it does take in a callback function like other higher-order functions, the syntax is a bit different —
+          have a look...
+        </p>
+        <pre><code class="language-javascript">
+array.reduce((previousValue, currentValue) => {
+// ...
+}, initialValue)
+        </code></pre>
+        <p class="content-text">
+          ...just like <code class="inline-code">.map()</code> and <code class="inline-code">.filter()</code>,
+          the callback function takes in the current value, except this time, it's the second argument.  The first
+          argument will hold the previous value, and it's given an initial value
+          after the callback function.  This may sound a bit confusing, but the logic is quite simple...
+        </p>
+        <pre><code class="language-javascript">
+const finalOutput = money.reduce((sum, m) => {
+ return sum += m.amount;
+}, 0)
+
+console.log(finalOutput);
+// 1886
+        </code></pre>
+        <ol class="content-list">
+            <li class="content-list">The <code class="inline-code">sum</code> is initialized with a value of <code class="inline-code">0</code>.</li>
+            <li class="content-list"><code class="inline-code">sum</code> is added with the first
+            element, <code class="inline-code">m[0].amount</code>, which holds a value of <code class="inline-code">223</code>.</li>
+            <li class="content-list"><code class="inline-code">sum</code> is now <code class="inline-code">223</code>.</li>
+            <li class="content-list"><code class="inline-code">sum</code> is added with the second
+            element, <code class="inline-code">m[1].amount</code>, which holds a value of <code class="inline-code">342</code>.</li>
+            <li class="content-list"><code class="inline-code">sum</code> is now <code class="inline-code">565</code>.</li>
+            <li class="content-list">This continues for every iteration until the final element is
+              added to the <code class="inline-code">sum</code>, which will print a final value of <code class="inline-code">1886</code>.
+            </li>
+        </ol>
+
+        <br>
+        <h3 class="content-subheading">Applying higher-order functions</h3>
+        <p class="content-text">
+          The best way to get comfortable with new concepts is to apply them.  Instead of using <code class="inline-code">for</code> loops in
+          your code, opt for a higher-order function instead — they're shorter, have higher reusability, and they're easier to work with!
+        </p>
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
