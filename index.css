@@ -1,3 +1,7 @@
+* {
+  /* outline: 1px solid red; */
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -9,6 +13,29 @@ body {
 }
 
 /** HEADER SECTION **/
+.theme-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+#theme-button {
+  background-color: transparent;
+  color: var(--secondary-color);
+  border: none;
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 3%;
+  margin-right: 3%;
+}
+
+#theme-button:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+}
+
+
 .header-container {
   display: flex;
   flex-direction: column;
@@ -20,10 +47,6 @@ body {
 #logo {
   max-width: 25%;
   animation: floating 2s alternate-reverse infinite;
-}
-
-#logo:hover {
-  cursor: pointer;
 }
 
 @keyframes floating {
@@ -110,6 +133,10 @@ hr {
 
 /** RESPONSIVE DESIGN - DESKTOP **/
 @media screen and (min-width: 1000px) {
+  #theme-button {
+    font-size: 1.5rem;
+  }
+  
   #logo {
     max-width: 10%;
   }
