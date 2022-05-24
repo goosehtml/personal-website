@@ -1,17 +1,9 @@
-* {
-  --primary-color: #96a38e;
-  --secondary-color: #a39e8e;
-  --contrast-white: #ffffff;
-  --contrast-black: #242424;
-}
-
 body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "VT323", monospace;
-  background-color: var(--contrast-black);
-  color: var(--contrast-white);
+  background-color: var(--background);
   position: relative;
   min-height: 100vh;
 }
@@ -39,11 +31,12 @@ body {
   font-size: 1.875rem;
   margin-top: 5px;
   margin-bottom: 10px;
+  color: var(--secondary-color);
 }
 
 #post-date {
   font-size: 1.5rem;
-  color: var(--secondary-color);
+  color: var(--primary-color);
   margin-top: 10px;
 }
 
@@ -55,7 +48,7 @@ body {
 }
 
 .content-subheading {
-  color: var(--secondary-color);
+  color: var(--primary-color);
   font-family: "Roboto", sans-serif;
   font-weight: 700;
   font-size: 1.5rem;
@@ -67,6 +60,7 @@ body {
   font-size: 1.125rem;
   line-height: 1.5;
   margin-top: 5px;
+  color: var(--secondary-color);
 }
 
 .content-image {
@@ -74,14 +68,19 @@ body {
 }
 
 .content-link {
-  color: #ffffff;
+  color: var(--secondary-color);
   text-decoration-style: dotted;
+}
+
+.content-link:hover {
+  color: var(--secondary-color-hover);
 }
 
 .content-list {
   font-family: "Roboto", sans-serif;
   font-size: 1.125rem;
   line-height: 1.5;
+  color: var(--secondary-color);
 }
 
 code {
@@ -89,7 +88,7 @@ code {
 }
 
 .inline-code {
-  background-color: #3e3e3e;
+  background-color: var(--horizontal-line);
 }
 
 /** NAVIGATION SECTION **/
@@ -102,11 +101,11 @@ code {
 
 .homepage-link {
   text-decoration: none;
-  color: var(--secondary-color);
+  color: var(--primary-color);
 }
 .homepage-link:hover {
   cursor: pointer;
-  color: #ffffff;
+  color: var(--primary-color-hover);
 }
 
 /** FOOTER SECTION **/
@@ -124,6 +123,7 @@ code {
 #copyright {
   margin-top: 5px;
   margin-bottom: 5px;
+  color: #ffffff;
 }
 
 /** RESPONSIVE DESIGN - DESKTOP **/
