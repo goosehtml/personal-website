@@ -14,34 +14,117 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/base16/tomorrow-night.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
-    <title>The synchronous nature of JavaScript</title>
+    <title>Diving into the React library</title>
   </head>
   <body>
       <!-- BLOG HEADER SECTION -->
     <header class="post-header-container">
-      <h1 id="post-heading">The synchronous nature of JavaScript</h1>
+      <h1 id="post-heading">Diving into the React library</h1>
         <p id="post-subheading">
-          Covering one of the most misunderstood and difficult-to-grasp concepts in JavaScript
+          Getting familiar with one of the most popular JavaScript frameworks
         </p>
-        <p id="post-date">Published May 9, 2022</p>
+        <p id="post-date">Published May 24, 2022</p>
     </header>
 
     <!-- BLOG CONTENT SECTION -->
     <section class="blog-content-container">
 
       <article class="blog-post">
-        <h3 class="content-subheading">A peek inside synchronous code</h3>
+        <h3 class="content-subheading">Why use React?</h3>
         <p class="content-text">
-          Whenever you're driving a car, it's not often that you think about what's happening under the hood; most people don't
-          care — their only concern is whether the car runs or not.  Similarly, a lot of developers approach JavaScript with
-          the same mentality: "I don't care what's going on in the background, so long as my code runs."
+          JavaScript is a powerful language that can be used both on the client-side and server-side (with Node.js); this makes it
+          great for building anything from small projects to large-scale applications.  Whenever you're working with simple applications,
+          plain JavaScript will usually suffice, but add more complexity to your application, and your codebase will quickly begin to
+          get messy.  Luckily, frameworks fix this.
         </p>
 
         <p class="content-text">
-          Even though you're not expected to know everything, it is crucial to at least understand how JavaScript code
-          gets executed.  By default, JavaScript is a synchronous language, meaning that every line of code gets executed
-          one-by-one.  This makes it a "single-threaded" language.  A good way to show this synchronous nature is through functions:
+          A framework is a collection of pre-written JavaScript code that you can use.  This, in turn, prevents you from
+          trying to reinvent the wheel, and skyrockets productivity and efficiency.  There's several frameworks to choose
+          from, but one of the most popular is React, which takes a "component-based" approach to JavaScript functions.
+          Imagine the engineering behind a watch.  A watch is one working piece, but it's composed of hundreds of other
+          smaller pieces, each with their own functionality.  React works similarly; anything in your application can be a component:
+          buttons, forms, UIs, navigation menus, etc.  This, in essence, allows you to easily reuse components all
+          across your application.
         </p>
+
+        <br>
+        <h3 class="content-subheading">Creating a React project</h3>
+        <p class="content-text">
+            Now that you have a basic understanding on how React works, it's time to create your very first React project.
+            Keep in mind, React is a JavaScript library, which means that it builds off JavaScript.  In order to learn
+            React, you must first have a strong proficiency with regular JavaScript and understand critical concepts like:
+        </p>
+        <ul class="content-list">
+             <li class="content-list">Array manipulation using higher-order functions</li>
+             <li class="content-list">Scoping and hoisting</li>
+             <li class="content-list">Asynchronous code</li>
+             <li class="content-list">Logical operators and type coercion</li>
+             <li class="content-list">Making HTTP requests</li>
+        </ul>
+        <p class="content-text">
+            ...knowing these fundamentals will make learning React feel like a breeze and simple be sugar on top of what
+            you already know.
+        </p>
+
+         <p class="content-text">
+            React applications can be set up from scratch, but this requires prior knowledge of other libraries like Babel and
+            webpack.  The easiest way to create a React application is through Create React App, which automatically
+            sets up a React environment by running one simple command.  To get started, open your terminal emulator and
+            type this into the command line:
+        </p>
+        <pre><code class="language-shell">
+$ npx create-react-app myfirstapplication
+        </code></pre>
+        <p class="content-text">
+            ...this will create a new React project with the name of "myfirstapplication" inside your directory.  It'll take
+            a few seconds for everything to install, but once it's done, your terminal emulator should look like this...
+        </p>
+        <img class="content-image" src="./images/new-react-project.png" alt="screenshot of terminal emulator message">
+        <p class="content-text">
+            ...open the project in VS Code and start your server by typing <code class="inline-code">npm start</code>.
+            Your application should look like this...
+        </p>
+        <img class="content-image" src="./images/react-starter.png" alt="screenshot starter react application">
+        <p class="content-text">
+            ...awesome, your React environment is now running and ready for development!
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Building a component</h3>
+        <p class="content-text">
+            Now that your React environment is set up, you can start developing your application.  Because this article is
+            a very surface-level introduction of React, I'll only be discussing components and props.  Other concepts like
+            hooks and state management are beyond the scope of this beginner-friendly article.
+        </p>
+
+        <p class="content-text">
+            Remember, components are simply reusable bits of code that serve the same purpose as JavaScript functions.
+            In React, each component usually lives in it's own file.  The <code class="inline-code">App.js</code> file
+            holds the <code class="inline-code">App</code> component.  By default, the <code class="inline-code">App</code>
+            component comes with a few unnecessary lines of code.  Clean it up so it looks like this:
+        </p>
+        <pre><code class="language-javascript">
+const App = () => {
+  return (
+    <div className="App">
+    </div>
+  );
+}
+
+export default App;
+        </code></pre>
+        <p class="content-text">
+            ...React uses plenty of ES6 features, including arrow functions, which is why I transformed the
+            <code class="inline-code">App</code> function.
+        </p>
+
+
+
+
+
+
+
         <pre><code class="language-javascript">
 console.log('a');
 console.log('b');
