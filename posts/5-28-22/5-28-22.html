@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link href="../../theme.css" type="text/css" rel="stylesheet" />
+    <script defer src="../../index.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/base16/tomorrow-night.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>Context API: the solution to "prop drilling"</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">Context API: the solution to "prop drilling"</h1>
+        <p id="post-subheading">
+          React's useContext() Hook is a great way to clean up components that contain unnecessary props
+        </p>
+        <p id="post-date">Published May 28, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">The problem with React props</h3>
+        <p class="content-text">
+          Components are great — they allow you to easily organize different parts of your application into separate files.  If you
+          have a child component that needs a piece of state, simply lift that state up to the nearest parent component, and
+          then pass it down as a prop.  Here's an example:
+        </p>
+        <pre><code class="language-jsx">
+// App.js
+import IncrementButton from &#x22;./IncrementButton&#x22;;
+import { useState } from &#x22;react&#x22;;
+
+const App = () =&#x3E; {
+  const [count, setCount] = useState(0);
+
+  return (
+    &#x3C;div className=&#x22;container&#x22;&#x3E;
+      &#x3C;h1&#x3E;{count}&#x3C;/h1&#x3E;
+      &#x3C;div&#x3E;
+        &#x3C;IncrementButton setCount={setCount} /&#x3E;
+      &#x3C;/div&#x3E;
+    &#x3C;/div&#x3E;
+  );
+};
+
+export default App;
+        </code></pre>
+        <pre><code class="language-jsx">
+// IncrementButton.js
+const IncrementButton = (props) =&#x3E; {
+  const incrementHandler = () =&#x3E; {
+    props.setCount((prevCount) =&#x3E; prevCount + 1);
+  };
+  return (
+    &#x3C;&#x3E;
+      &#x3C;button onClick={incrementHandler}&#x3E;+&#x3C;/button&#x3E;
+    &#x3C;/&#x3E;
+  );
+};
+
+export default IncrementButton;
+        </code></pre>
+        <p class="content-text">
+          ...this is a simple application with two components: <code class="inline-code">App</code> and <code class="inline-code">IncrementButton</code>.
+          The parent component (<code class="inline-code">App</code>) holds the <code class="inline-code">count</code>
+          state, which is used to display the current number.  The <code class="inline-code">setCount</code> function is passed down to the child component
+          (<code class="inline-code">IncrementButton</code>) as a prop, where it can then control the state.  This works great, but what if
+          the application looks something like this instead...
+        </p>
+        <pre><code class="language-jsx">
+// App.js
+import IncrementInterface from &#x22;./IncrementInterface&#x22;;
+import { useState } from &#x22;react&#x22;;
+
+const App = () =&#x3E; {
+  const [count, setCount] = useState(0);
+
+  return (
+    &#x3C;div className=&#x22;container&#x22;&#x3E;
+      &#x3C;h1&#x3E;{count}&#x3C;/h1&#x3E;
+      &#x3C;div&#x3E;
+        &#x3C;IncrementInterface setCount={setCount} /&#x3E;
+      &#x3C;/div&#x3E;
+    &#x3C;/div&#x3E;
+  );
+};
+
+export default App;
+        </code></pre>
+        <pre><code class="language-jsx">
+// IncrementInterface.js
+import IncrementButton from &#x22;./IncrementButton&#x22;;
+
+const IncrementInterface = (props) =&#x3E; {
+  return (
+    &#x3C;div&#x3E;
+      &#x3C;p&#x3E;CLICK TO INCREMENT: &#x3C;/p&#x3E;
+      &#x3C;IncrementButton setCount={props.setCount} /&#x3E;
+    &#x3C;/div&#x3E;
+  );
+};
+
+export default IncrementInterface;
+        </code></pre>
+        <pre><code class="language-jsx">
+// IncrementButton.js
+const IncrementButton = (props) =&#x3E; {
+  const incrementHandler = () =&#x3E; {
+    props.setCount((prevCount) =&#x3E; prevCount + 1);
+  };
+  return (
+    &#x3C;&#x3E;
+      &#x3C;button onClick={incrementHandler}&#x3E;+&#x3C;/button&#x3E;
+    &#x3C;/&#x3E;
+  );
+};
+
+export default IncrementButton;
+        </code></pre>
+        <p class="content-text">
+          ...this time, <code class="inline-code">setCount</code> is passed down as a prop to the <code class="inline-code">IncrementInterface</code>
+          component, which then passes it down again to the <code class="inline-code">IncrementButton</code>, where it can finally be used.  This is a problem.
+          Why?  Well, the <code class="inline-code">IncrementInterface</code> component has no need for the <code class="inline-code">setCount</code> prop — it's
+          simply passing it down to the <code class="inline-code">IncrementButton</code> component.  This process of sending props from a higher-level component
+          to a lower-level component is referred to as "prop drilling".
+        </p>
+
+        <p class="content-text">
+          As you might imagine, this can quickly get messy if there's a lot of components.  For example, if component
+          "E" needs a piece of state from component "A", it needs to be sent all the way down as a prop, going through "B", "C", and "D", before finally reaching "E".
+          Wouldn't it be great if you could just pass that state directly from component "A" to "E"?  Well, you can!
+        </p>
+
+        <br>
+        <h3 class="content-subheading">Using the Context API</h3>
+        <p class="content-text">
+            The React Context API is the solution to prop drilling.  In a nutshell, the Context API is just a structure that allows you to share
+            data across all levels of your application.  Using the Context API is simple, and I'll show how by using the example from earlier.
+        </p>
+
+        <p class="content-text">
+            Earlier I stated that I want to be able to pass down the <code class="inline-code">setCount</code> function directly to the
+            <code class="inline-code">IncrementButton</code> component, without going through the <code class="inline-code">IncrementInterface</code>
+            component at all.  With the Context API, this can easily be achieved.  First, I'll create a new folder in my application called
+            <code class="inline-code">contexts</code>, which will hold all my contexts.  Inside this folder, I'll create a new file called
+            <code class="inline-code">countContext.js</code>, which is where I'll create the context.  Here's what my file looks like after the
+            context is created:
+        </p>
+        <pre><code class="language-jsx">
+// countContext.js
+import { createContext } from &#x22;react&#x22;;
+
+export const countContext = createContext({});
+        </code></pre>
+        <p class="content-text">
+            ...the <code class="inline-code">createContext</code> function is imported from React and initialized with an empty object.  Then,
+            it's exported as a variable called <code class="inline-code">countContext</code>.  Now, this context can be used in the parent component, which
+            in this case is <code class="inline-code">App</code>...
+        </p>
+        <pre><code class="language-jsx">
+// App.js
+import IncrementInterface from &#x22;./IncrementInterface&#x22;;
+import { countContext } from &#x22;./contexts/countContext&#x22;;
+import { useState } from &#x22;react&#x22;;
+
+const App = () =&#x3E; {
+  const [count, setCount] = useState(0);
+
+  return (
+    &#x3C;countContext.Provider value={{ setCount }}&#x3E;
+      &#x3C;div className=&#x22;container&#x22;&#x3E;
+        &#x3C;h1&#x3E;{count}&#x3C;/h1&#x3E;
+        &#x3C;div&#x3E;
+          &#x3C;IncrementInterface /&#x3E;
+        &#x3C;/div&#x3E;
+      &#x3C;/div&#x3E;
+    &#x3C;/countContext.Provider&#x3E;
+  );
+};
+
+export default App;
+        </code></pre>
+        <p class="content-text">
+            ...first, the <code class="inline-code">countContext</code> variable is imported into the component.  Once imported, it's used just like any
+            other component, wrapping around everything.  The <code class="inline-code">Provider</code> keyword provides the ability to access
+            context changes.  Next, the component is given a prop of <code class="inline-code">value</code>, which will hold an object of any pieces of
+            data you want to access across your application.  For my application, I want to be able to access <code class="inline-code">setCount</code>
+            from anywhere.  Now, every component in between the <code class="inline-code">countContext</code> tags (including children of those components)
+            will have access to <code class="inline-code">setCount</code>.  Since I want to use <code class="inline-code">setCount</code> in
+            the <code class="inline-code">IncrementButton</code> component, I need to import the context in that component, along with the <code class="inline-code">useContext()</code>
+            React Hook...
+        </p>
+        <pre><code class="language-jsx">
+// IncrementButton.js
+import { useContext } from &#x22;react&#x22;;
+import { countContext } from &#x22;./contexts/countContext&#x22;;
+
+const IncrementButton = (props) =&#x3E; {
+  const { setCount } = useContext(countContext);
+
+  const incrementHandler = () =&#x3E; {
+    setCount((prevCount) =&#x3E; prevCount + 1);
+  };
+  return (
+    &#x3C;&#x3E;
+      &#x3C;button onClick={incrementHandler}&#x3E;+&#x3C;/button&#x3E;
+    &#x3C;/&#x3E;
+  );
+};
+
+export default IncrementButton;
+        </code></pre>
+        <p class="content-text">
+            ...the <code class="inline-code">useContext()</code> Hook is used to create data that can be accessed throughout the component hierarchy
+            without "prop drilling".  Using it is easy: just destructure the variable(s) you got from <code class="inline-code">countContext</code>,
+            which in this case is only <code class="inline-code">setCount</code>.  After that, it can be used anywhere in the
+            <code class="inline-code">IncrementButton</code> component without the use of props.
+        </p>
+
+        <p class="content-text">
+            Contexts aren't limited to just one component; if I wanted to, I could use <code class="inline-code">setCount</code> across different
+            components.  At the end of the day, the Context API should be used whenever
+            you have data that needs to be accessed throughout different components.  It makes your codebase cleaner and removes the need for
+            prop drilling, making it great for state management.  For a more complex application, you should probably use a library like Redux for
+            state management, which is much more powerful.
+        </p>
+
+        <p class="content-text">
+            If you want to learn more about context, I recommend reading
+            <a class="content-link" href="https://reactjs.org/docs/context.html">React's official documentation</a> on the
+            topic.
+        </p>
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
