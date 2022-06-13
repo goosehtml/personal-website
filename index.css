@@ -11,10 +11,10 @@ body {
 /** HEADER SECTION **/
 #theme-button {
   background-color: transparent;
-  color: var(--secondary-color);
-  border: none;
+  color: var(--primary-color);
   font-size: 1.125rem;
   font-weight: 600;
+  margin-top: 5px;
 }
 
 #theme-button:hover {
@@ -54,6 +54,7 @@ body {
 #main-subheading {
   font-size: 1.875rem;
   margin-top: 5px;
+  margin-bottom: 5px;
   color: var(--secondary-color);
   text-align: center;
 }

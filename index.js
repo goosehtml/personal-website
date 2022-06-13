@@ -6,11 +6,11 @@ let isEnabled;
 
 if (darkMode === null) {
   document.body.classList.remove("darkmode");
-  themeButton.textContent = "☼";
+  themeButton.textContent = "!light-mode";
   isEnabled = false;
 } else {
   document.body.classList.add("darkmode");
-  themeButton.textContent = "☾";
+  themeButton.textContent = "!dark-mode";
   isEnabled = true;
 }
 
@@ -20,11 +20,11 @@ const toggleTheme = () => {
   if (isEnabled) {
     localStorage.setItem("darkMode", "enabled");
     document.body.classList.add("darkmode");
-    themeButton.textContent = "☾";
+    themeButton.textContent = "!dark-mode";
   } else {
     localStorage.removeItem("darkMode");
     document.body.classList.remove("darkmode");
-    themeButton.textContent = "☼";
+    themeButton.textContent = "!light-mode";
   }
 };
 
