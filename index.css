@@ -1,7 +1,3 @@
-* {
-  /* outline: 1px solid red; */
-}
-
 body {
   margin: 0;
   padding: 0;
@@ -13,21 +9,12 @@ body {
 }
 
 /** HEADER SECTION **/
-.theme-button-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
 #theme-button {
   background-color: transparent;
   color: var(--secondary-color);
   border: none;
   font-size: 1.125rem;
   font-weight: 600;
-  text-align: center;
-  margin-top: 3%;
-  margin-right: 3%;
 }
 
 #theme-button:hover {
@@ -37,10 +24,10 @@ body {
 
 .header-container {
   display: flex;
+  height: 100vh;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 3.125em;
 }
 
 #logo {
@@ -83,66 +70,6 @@ body {
   color: var(--secondary-color-hover);
 }
 
-/** MAIN CONTENT SECTION **/
-.content-container {
-  margin-top: 3.125em;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-.post-link {
-  text-decoration: none;
-  color: var(--secondary-color);
-}
-.post-link:hover {
-  cursor: pointer;
-  color: var(--secondary-color-hover);
-}
-
-.post-date {
-  color: var(--primary-color);
-}
-
-hr {
-  border: 1px solid var(--horizontal-line);
-  width: 100%;
-}
-
-/** NAVIGATION SECTION **/
-.navigation-container {
-  margin-top: 3.125em;
-  padding-bottom: 6rem;
-  text-align: center;
-  font-size: 1.125rem;
-}
-
-.older-posts-link {
-  text-decoration: none;
-  color: var(--primary-color);
-}
-.older-posts-link:hover {
-  cursor: pointer;
-  color: var(--primary-color-hover);
-}
-
-/** FOOTER SECTION **/
-.footer-container {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  margin-top: 6.25em;
-  text-align: center;
-  font-size: 1.125rem;
-  background-color: #000000;
-  overflow: hidden;
-}
-
-#copyright {
-  margin-top: 5px;
-  margin-bottom: 5px;
-  color: #ffffff;
-}
-
 /** RESPONSIVE DESIGN - DESKTOP **/
 @media screen and (min-width: 1000px) {
   #theme-button {
@@ -151,26 +78,5 @@ hr {
 
   #logo {
     max-width: 10%;
-  }
-
-  .content-container {
-    padding-left: 150px;
-    padding-right: 150px;
-  }
-
-  .post-link {
-    font-size: 1.875rem;
-  }
-
-  .post-date {
-    font-size: 1.5rem;
-  }
-
-  .older-posts-link {
-    font-size: 1.5rem;
-  }
-
-  #copyright {
-    font-size: 1.5rem;
   }
 }
