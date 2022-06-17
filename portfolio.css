@@ -53,7 +53,7 @@ body {
   border-radius: 25px;
   font-family: "Roboto", sans-serif;
   margin-top: 3.125em;
-  margin-bottom: 3.125em;;
+  margin-bottom: 3.125em;
 }
 
 .project-img {
@@ -156,6 +156,10 @@ body {
   .project-technologies,
   .repository-btn {
     font-size: 1.5rem;
+  }
+
+  .project-description {
+    width: 95%;
   }
 
   .homepage-link {
