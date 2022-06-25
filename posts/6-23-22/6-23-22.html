@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link href="../../theme.css" type="text/css" rel="stylesheet" />
+    <script defer src="../../index.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/base16/tomorrow-night.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>Setting up protected routes with React Router v6</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">Setting up protected routes with React Router v6</h1>
+        <p id="post-subheading">
+          Protected routes are the easiest way to prevent unauthorized users from accessing certain pages
+        </p>
+        <p id="post-date">Published June 23, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">When should you use protected routes?</h3>
+        <p class="content-text">
+          If you're setting up routing in your React application, there might be a few routes that you don't want
+          unauthorized users to access.  An example of this would be a <code class="inline-code">/profile</code> route
+          for an application that requires credential authentication.
+        </p>
+
+        <p class="content-text">
+          Without the implementation of protected routes, anyone can access the "Profile" page simply by typing the path
+          into the browser's address bar.  Ideally, the route should be inaccessible to users without authenticated
+          credentials.  If an unauthorized user tries to access the <code class="inline-code">/profile</code> route,
+          they should be redirected back to the <code class="inline-code">/login</code> route.  Luckily, this is super
+          simple to accomplish, so let's dive right in.
+        </p>
+
+        <h3 class="content-subheading">Creating a protected route</h3>
+        <p class="content-text">
+          For this guide, let's assume I'm creating an application with a "Login", "Home", "Profile", and "Settings" page.  With basic routing set up,
+          it should look something like this:
+        </p>
+        <pre><code class="language-jsx">
+// App.js
+import { AuthContextProvider } from &#x22;./contexts/auth-context&#x22;;
+import LogIn from &#x22;./pages/LogIn&#x22;;
+import Home from &#x22;./pages/Home&#x22;;
+import Profile from &#x22;./pages/Profile&#x22;;
+import Settings from &#x22;./pages/Settings&#x22;;
+import { BrowserRouter, Routes, Route } from &#x22;react-router-dom&#x22;;
+
+const App = () =&#x3E; {
+  return (
+    &#x3C;div&#x3E;
+      &#x3C;AuthContextProvider&#x3E;
+        &#x3C;BrowserRouter&#x3E;
+          &#x3C;Routes&#x3E;
+            &#x3C;Route path=&#x22;login&#x22; element={&#x3C;LogIn /&#x3E;} /&#x3E;
+            &#x3C;Route path=&#x22;/&#x22; element={&#x3C;Home /&#x3E;} /&#x3E;
+            &#x3C;Route path=&#x22;profile&#x22; element={&#x3C;Profile /&#x3E;} /&#x3E;
+            &#x3C;Route path=&#x22;settings&#x22; element={&#x3C;Settings /&#x3E;} /&#x3E;
+          &#x3C;/Routes&#x3E;
+        &#x3C;/BrowserRouter&#x3E;
+      &#x3C;/AuthContextProvider&#x3E;
+    &#x3C;/div&#x3E;
+  );
+};
+
+export default App;
+        </code></pre>
+        <p class="content-text">
+          ...each component has its own route, and every route is currently accessible to anyone.
+          The <code class="inline-code">AuthContextProvider</code> serves as a wrapper component which holds the application's
+          context, which isn't required or important for this guide — it just detects whether the user is logged in or not.  My goal is
+          to make the <code class="inline-code">/</code>, <code class="inline-code">/profile</code>, and
+          <code class="inline-code">/settings</code> routes available only to authenticated users.
+        </p>
+
+        <p class="content-text">
+          To do this, I need to create a wrapper component that'll hold the routes I want to protect.  I'll name this component
+          <code class="inline-code">PrivateRoutes.js</code> and set everything up:
+        </p>
+        <pre><code class="language-jsx">
+// PrivateRoutes.js
+import { useAuth } from &#x22;../contexts/auth-context&#x22;;
+import { Outlet, Navigate } from &#x22;react-router-dom&#x22;;
+
+const PrivateRoutes = () =&#x3E; {
+  const { isLoggedIn } = useAuth();
+
+  return isLoggedIn ? &#x3C;Outlet /&#x3E; : &#x3C;Navigate to=&#x22;login&#x22; /&#x3E;;
+};
+
+export default PrivateRoutes;
+        </code></pre>
+        <p class="content-text">
+          ...<code class="inline-code">useAuth</code> is imported, which simply has the <code class="inline-code">isLoggedIn</code> state that
+          holds a Boolean.  After that, the <code class="inline-code">Outlet</code> and <code class="inline-code">Navigate</code>
+          components are imported.  The <code class="inline-code">Outlet</code> component is used in parent route elements to
+          render child route elements.  The <code class="inline-code">Navigate</code> component changes the current location of
+          the application.  The ternary operation inside <code class="inline-code">PrivateRoutes</code> basically says, "If
+          the user is logged in, render all the child components inside the wrapper; if the user isn't logged in, redirect them
+          to the 'Login' page if they try to access any of those child components."
+        </p>
+
+        <p class="content-text">
+          Now that the rules for the protected route wrapper component are written, it can be imported and used:
+        </p>
+        <pre><code class="language-jsx">
+// App.js
+import { AuthContextProvider } from &#x22;./contexts/auth-context&#x22;;
+import LogIn from &#x22;./pages/LogIn&#x22;;
+import Home from &#x22;./pages/Home&#x22;;
+import Profile from &#x22;./pages/Profile&#x22;;
+import Settings from &#x22;./pages/Settings&#x22;;
+import { BrowserRouter, Routes, Route } from &#x22;react-router-dom&#x22;;
+import PrivateRoutes from &#x22;./components/PrivateRoutes&#x22;;
+
+const App = () =&#x3E; {
+  return (
+    &#x3C;div&#x3E;
+      &#x3C;AuthContextProvider&#x3E;
+        &#x3C;BrowserRouter&#x3E;
+          &#x3C;Routes&#x3E;
+            &#x3C;Route path=&#x22;login&#x22; element={&#x3C;LogIn /&#x3E;} /&#x3E;
+
+            &#x3C;Route element={&#x3C;PrivateRoutes /&#x3E;}&#x3E;
+              &#x3C;Route path=&#x22;/&#x22; element={&#x3C;Home /&#x3E;} /&#x3E;
+              &#x3C;Route path=&#x22;profile&#x22; element={&#x3C;Profile /&#x3E;} /&#x3E;
+              &#x3C;Route path=&#x22;settings&#x22; element={&#x3C;Settings /&#x3E;} /&#x3E;
+            &#x3C;/Route&#x3E;
+          &#x3C;/Routes&#x3E;
+        &#x3C;/BrowserRouter&#x3E;
+      &#x3C;/AuthContextProvider&#x3E;
+    &#x3C;/div&#x3E;
+  );
+};
+
+export default App;
+        </code></pre>
+        <p class="content-text">
+          ...the <code class="inline-code">PrivateRoutes</code> component is used as a wrapper around the routes that require
+          authentication.  This works perfectly, but now there's an issue: even if the user is logged in, they can still
+          access the <code class="inline-code">/login</code> path.  Luckily, this can be solved by creating another wrapper
+          component similar to the one I just created:
+        </p>
+        <pre><code class="language-jsx">
+// DisableAuthenticateRoute.js
+import { useAuth } from &#x22;../contexts/auth-context&#x22;;
+import { Outlet, Navigate } from &#x22;react-router-dom&#x22;;
+
+const DisableAuthenticateRoute = () =&#x3E; {
+  const { isLoggedIn } = useAuth();
+
+  return isLoggedIn ? &#x3C;Navigate to=&#x22;/&#x22; /&#x3E; : &#x3C;Outlet /&#x3E;;
+};
+
+export default DisableAuthenticateRoute;
+        </code></pre>
+        <p class="content-text">
+          ...this time, the ternary operation says, "If the user is logged in, redirect them to the 'Home' page if they try
+          to access the 'Login' page; if the user isn't logged in, render all the child components inside the wrapper."
+        </p>
+
+        <p class="content-text">
+          With everything set up and complete, the final routing looks something like this:
+        </p>
+        <pre><code class="language-jsx">
+// App.js
+import { AuthContextProvider } from &#x22;./contexts/auth-context&#x22;;
+import LogIn from &#x22;./pages/LogIn&#x22;;
+import Home from &#x22;./pages/Home&#x22;;
+import Profile from &#x22;./pages/Profile&#x22;;
+import Settings from &#x22;./pages/Settings&#x22;;
+import { BrowserRouter, Routes, Route } from &#x22;react-router-dom&#x22;;
+import PrivateRoutes from &#x22;./components/PrivateRoutes&#x22;;
+import DisableAuthenticateRoute from &#x22;./components/DisableAuthenticateRoute&#x22;;
+
+const App = () =&#x3E; {
+  return (
+    &#x3C;div&#x3E;
+      &#x3C;AuthContextProvider&#x3E;
+        &#x3C;BrowserRouter&#x3E;
+          &#x3C;Routes&#x3E;
+            &#x3C;Route element={&#x3C;DisableAuthenticateRoute /&#x3E;}&#x3E;
+              &#x3C;Route path=&#x22;login&#x22; element={&#x3C;LogIn /&#x3E;} /&#x3E;
+            &#x3C;/Route&#x3E;
+
+            &#x3C;Route element={&#x3C;PrivateRoutes /&#x3E;}&#x3E;
+              &#x3C;Route path=&#x22;/&#x22; element={&#x3C;Home /&#x3E;} /&#x3E;
+              &#x3C;Route path=&#x22;profile&#x22; element={&#x3C;Profile /&#x3E;} /&#x3E;
+              &#x3C;Route path=&#x22;settings&#x22; element={&#x3C;Settings /&#x3E;} /&#x3E;
+            &#x3C;/Route&#x3E;
+          &#x3C;/Routes&#x3E;
+        &#x3C;/BrowserRouter&#x3E;
+      &#x3C;/AuthContextProvider&#x3E;
+    &#x3C;/div&#x3E;
+  );
+};
+
+export default App;
+        </code></pre>
+        <p class="content-text">
+          ...all done!  Unauthorized users will now be redirected to the <code class="inline-code">/login</code> path until they
+          log in, and authorized users won't be able to access that path unless they log out.
+        </p>
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
