@@ -129,8 +129,14 @@ code {
 /** RESPONSIVE DESIGN - DESKTOP **/
 @media screen and (min-width: 1000px) {
   .blog-content-container {
-    padding-left: 150px;
-    padding-right: 150px;
+    padding-left: 300px;
+    padding-right: 300px;
+  }
+
+  .content-image {
+    max-width: 75%;
+    display: block;
+    margin: auto;
   }
 
   .content-subheading {
