@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link href="../../theme.css" type="text/css" rel="stylesheet" />
+    <script defer src="../../index.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/base16/tomorrow-night.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>Understanding JavaScript Promises</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">Understanding JavaScript Promises</h1>
+        <p id="post-subheading">
+          Article covering a brief overview of JavaScript Promises and how to use them
+        </p>
+        <p id="post-date">Published July 21, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">What is a Promise?</h3>
+        <p class="content-text">
+          In everyday language, a promise is a declaration or assurance that one will do a particular thing or that a particular
+          thing will happen, and it can either be kept or broken.  In JavaScript, a Promise is similar: it's simply an object
+          with a value that will either be fulfilled or rejected.  If a Promise is fulfilled, the application will do this;
+          if the Promise is rejected, the application will do that.
+        </p>
+
+        <p class="content-text">
+          JavaScript Promises are most commonly used when handling asynchronous operations.  It's important to have a strong
+          understanding of synchronous and asynchronous programming before working with Promises.  If you don't understand
+          asynchronous JavaScript, I have an article which explains it in full detail here:
+        </p>
+        <ul class="content-list">
+            <li><a class="content-link" href="../5-9-22/5-9-22.html">The synchronous nature of JavaScript</a></li>
+        </ul>
+
+        <h3 class="content-subheading">How are Promises used?</h3>
+        <p class="content-text">
+          Let's say that you need to make an API request in order to fetch some data.  Retrieving data is something unpredictable
+          and out of your control — it can be fast, slow, successful, or even fail completely.  Because of this, API requests must
+          be handled asynchronously, typically through a Promise.  Promises ensure that the correct course of action is taken, regardless
+          of whether the request is successful or not.
+        </p>
+
+        <h3 class="content-subheading">How do you create a Promise?</h3>
+        <p class="content-text">
+          Generally, an instance of a Promise is created by using the <code class="inline-code">new</code> keyword followed
+          by the <code class="inline-code">Promise()</code> constructor function.  This function accepts a function as its
+          argument, which looks like this:
+        </p>
+
+        <pre><code class="language-javascript">
+const promise = new Promise(() => {
+// ...
+});
+        </code></pre>
+        <p class="content-text">
+          ...this function takes in two arguments, <code class="inline-code">resolve</code> and
+          <code class="inline-code">reject</code>, which are also functions...
+        </p>
+        <pre><code class="language-javascript">
+const promise = new Promise((resolve, reject) => {
+// ...
+});
+        </code></pre>
+        <p class="content-text">
+          ...one thing to note is that a Promise has 3 different states...
+        </p>
+        <ul class="content-list">
+             <li class="content-list">Pending: Initial state, neither fulfilled nor rejected.</li>
+             <li class="content-list">Fulfilled: The operation was completed successfully.</li>
+             <li class="content-list">Rejected: The operation failed.</li>
+        </ul>
+        <p class="content-text">
+          ...with this in mind, <code class="inline-code">resolve()</code> is a function that when called, changes the state of the Promise
+          from pending to fulfilled.  On the other hand, <code class="inline-code">reject()</code> is a function that
+          when called, changes the state of a Promise from pending to rejected.
+        </p>
+
+        <p class="content-text">
+          As stated earlier, Promises are generally used when working with data, but for simplicity's sake, I'll use the following example:
+        </p>
+        <pre><code class="language-javascript">
+const promise = new Promise((resolve, reject) => {
+  let age = 17;
+
+  if (age >= 21) {
+    resolve();
+  } else {
+    reject();
+  }
+});
+        </code></pre>
+        <p class="content-text">
+          ...here's a Promise that uses a conditional statement.  If <code class="inline-code">age</code> is 21 or greater, the
+          Promise will be fulfilled; if <code class="inline-code">age</code> is below 21, the Promise will be rejected.  If the Promise is
+          fulfilled, I want <code class="inline-code">old enough to drink</code> logged to the console; if the Promise is
+          rejected, I want <code class="inline-code">too young to drink</code> logged to the console.  In order to do this, I'll create two
+          separate callback functions — one for handling the fulfilled state and another for handling the rejected state...
+        </p>
+        <pre><code class="language-javascript">
+// ...
+const oldEnoughMessage = () => {
+  console.log("old enough to drink");
+};
+
+const tooYoungMessage = () => {
+  console.log("too young to drink");
+};
+// ...
+        </code></pre>
+        <p class="content-text">
+          ...now these functions can be combined with the Promise, but how?
+        </p>
+
+        <h3 class="content-subheading">.then() and .catch() methods</h3>
+        <p class="content-text">
+          <code class="inline-code">oldEnoughMessage</code> and <code class="inline-code">tooYoungMessage</code> are both
+          callback functions, which means they are passed in as arguments to other functions.  Those other functions
+          are the <code class="inline-code">.then()</code> and <code class="inline-code">.catch()</code> methods,
+          which the <code class="inline-code">Promise</code> constructor function gives us access to.
+        </p>
+
+        <p class="content-text">
+          Remember when I said that a Promise's course of action is determined by its success or failure?  Well, those actions
+          lie in the <code class="inline-code">.then()</code> and <code class="inline-code">.catch()</code> methods.  If the
+          Promise is fulfilled (<code class="inline-code">age</code> is equal to or greater than 21),
+          the <code class="inline-code">.then()</code> method/function will be executed.  If the Promise is rejected
+          (<code class="inline-code">age</code> is less than 21), the <code class="inline-code">.catch()</code>
+          method/function will be executed.
+        </p>
+
+        <p class="content-text">
+          With this in mind, we can pass in each callback function accordingly, like so:
+        </p>
+        <pre><code class="language-javascript">
+const promise = new Promise((resolve, reject) => {
+  let age = 17;
+
+  if (age >= 21) {
+    resolve();
+  } else {
+    reject();
+  }
+});
+
+const oldEnoughMessage = () => {
+  console.log("old enough to drink");
+};
+
+const tooYoungMessage = () => {
+  console.log("too young to drink");
+};
+
+promise.then(oldEnoughMessage);
+promise.catch(tooYoungMessage);
+// too young to drink
+        </code></pre>
+        <p class="content-text">
+          ...alteratively, the exact same result can be accomplished by passing in each callback function as an arrow function...
+        </p>
+        <pre><code class="language-javascript">
+const promise = new Promise((resolve, reject) => {
+  let age = 17;
+
+  if (age >= 21) {
+    resolve();
+  } else {
+    reject();
+  }
+});
+
+promise.then(() => {
+  console.log(result);
+  console.log("old enough to drink");
+});
+
+promise.catch(() => {
+  console.log(error);
+  console.log("too young to drink");
+});
+// too young to drink
+        </code></pre>
+        <p class="content-text">
+          ...the latter is the most common way of doing it.  If you take a look at the code, you'll notice that the
+          <code class="inline-code">resolve()</code> and <code class="inline-code">reject()</code> functions are still empty.
+          In order to make use of the value, I'll pass in a string to each one...
+        </p>
+        <pre><code class="language-javascript">
+// ...
+if (age >= 21) {
+    resolve('Success!');
+  } else {
+    reject('Error!');
+  }
+// ...
+        </code></pre>
+        <p class="content-text">
+          ...to access these strings, just pass them as arguments to the callback functions...
+        </p>
+        <pre><code class="language-javascript">
+const promise = new Promise((resolve, reject) => {
+  let age = 17;
+
+  if (age >= 21) {
+    resolve("Success!");
+  } else {
+    reject("Error!");
+  }
+});
+
+promise.then((result) => {
+  console.log(result);
+  console.log("old enough to drink");
+});
+
+promise.catch((error) => {
+  console.log(error);
+  console.log("too young to drink");
+});
+// Error!
+// too young to drink
+        </code></pre>
+        <p class="content-text">
+          ...this works perfectly, but the code can still be cleaned up even further.
+        </p>
+
+        <h3 class="content-subheading">Promise chaining</h3>
+        <p class="content-text">
+        <code class="inline-code">.then()</code> and <code class="inline-code">.catch()</code> both return Promises,
+        so they can be chained together, which is referred to as "Promise chaining".  Promise chaining allows
+        you to chain together multiple <code class="inline-code">.then()</code> calls, which will run when the previous
+        Promise is fulfilled.  The <code class="inline-code">.catch()</code> method can still be called to handle any
+        errors along the way.  Promise chaining usually looks something like this:
+        </p>
+        <pre><code class="language-javascript">
+const promise = new Promise((resolve, reject) => {
+  let age = 22;
+
+  if (age >= 21) {
+    resolve("Success!");
+  } else {
+    reject("Error!");
+  }
+});
+
+promise
+  .then((result) => {
+    console.log(result);
+    console.log("old enough to drink");
+    const msg = "🍻";
+    return msg;
+  })
+  .then((drinks) => {
+    console.log(drinks);
+  })
+  .catch((error) => {
+    console.log(error);
+    console.log("too young to drink");
+  });
+// Success!
+// old enough to drink
+// 🍻
+        </code></pre>
+        <p class="content-text">
+          ...in this example, <code class="inline-code">age</code> is 22, which means the
+          Promise will be fulfilled, therefore running the first <code class="inline-code">.then()</code> callback function,
+          which logs <code class="inline-code">Success!</code> and <code class="inline-code">old enough to drink</code>
+          to the console.  This callback function also returns a variable called <code class="inline-code">msg</code>,
+          which is then passed as the <code class="inline-code">drinks</code> argument to the chained call, where it finally
+          gets logged to the console.  If <code class="inline-code">age</code> was less than 21,
+          only the <code class="inline-code">.catch()</code> callback function would be invoked.
+        </p>
+
+        <p class="content-text">
+          That's JavaScript Promises in a nutshell.  Although there's nothing wrong with using <code class="inline-code">.then()</code>
+          and <code class="inline-code">.catch()</code> for handling asynchronous code, ES7 introduces the
+          <code class="inline-code">async</code> and <code class="inline-code">await</code> keywords, which have an even cleaner
+          syntax, all while offering the same functionality.  In my next article, I'll be covering how to use
+          <code class="inline-code">async/await</code> to enable asynchronous, Promise-based behavior, as well as comparing it to
+          <code class="inline-code">.then()/.catch()</code>, so stay tuned!
+        </p>
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
