@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link href="../../theme.css" type="text/css" rel="stylesheet" />
+    <script defer src="../../index.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/base16/tomorrow-night.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>Introduction to async/await keywords</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">Introduction to async/await keywords</h1>
+        <p id="post-subheading">
+          Exploring the async/await keywords, as well as comparing them to .then()/.catch()
+        </p>
+        <p id="post-date">Published July 24, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">Asynchronous JavaScript and Promises</h3>
+        <p class="content-text">
+          Before diving into <code class="inline-code">async/await</code>, you must first have a strong grasp of asynchronous
+          programming.  If you're unfamiliar with the concept, you can check out an article I wrote about it here:
+        </p>
+        <ul class="content-list">
+            <li><a class="content-link" href="../5-9-22/5-9-22.html">The synchronous nature of JavaScript</a></li>
+        </ul>
+        <p class="content-text">
+          ...furthermore, since <code class="inline-code">async/await</code> deals with Promises, you should also have 
+          a solid understanding on when, how, and why to use Promises.  This article serves as a continuation to the previous
+          article I wrote, which can be found <a class="content-link" href="../7-21-22/7-21-22.html">here</a>.
+          With that out the way, we can finally dive into <code class="inline-code">async/await</code>.
+        </p>
+
+        <h3 class="content-subheading">What is async/await?</h3>
+        <p class="content-text">
+          The <code class="inline-code">async/await</code> keywords were first introduced in ES7 as a way to enable
+          asynchronous, promise-based behavior.  They serve as an alternative to the <code class="inline-code">.then()/.catch()</code>
+          methods used in ES6, all while providing a cleaner and more concise syntax that resembles synchronous code.
+        </p>
+
+        <h3 class="content-subheading">async keyword</h3>
+        <p class="content-text">
+          Take a look at this arrow function:
+        </p>
+        <pre><code class="language-javascript">
+const sayHi = () => {
+  return "hi!";
+};
+
+sayHi();
+// hi
+        </code></pre>
+        <p class="content-text">
+          ...to no surprise, <code class="inline-code">hi</code> is logged to the console.  What if we converted this regular function
+          to an asynchronous function?  This can be done by adding the <code class="inline-code">async</code> keyword, which
+          is used to declare asynchronous functions...
+        </p>
+        <pre><code class="language-javascript">
+const sayHi = async () => {
+  return "hi!";
+};
+sayHi();
+// Promise {fulfilled: 'hi'}
+        </code></pre>
+        <p class="content-text">
+          ...since <code class="inline-code">sayHi</code> is now an asynchronous function, it returns a Promise, in this case, a fulfilled Promise
+          that holds the value of <code class="inline-code">hi</code>.  Consuming this value is nothing new and can
+          easily be achieved with a simple <code class="inline-code">.then()</code> callback...
+        </p>
+        <pre><code class="language-javascript">
+const sayHi = async () => {
+  return "hi";
+};
+
+sayHi().then((greeting) => {
+  console.log(greeting);
+});
+// hi
+        </code></pre>
+        <p class="content-text">
+          ...this works but you would only end up using <code class="inline-code">.then()</code> and
+          <code class="inline-code">.catch()</code> again, which defeats the whole purpose of <code class="inline-code">async</code>.
+          Instead, let's combine it with the <code class="inline-code">await</code> keyword.
+        </p>
+
+        <h3 class="content-subheading">await keyword</h3>
+        <p class="content-text">
+          Unlike the <code class="inline-code">async</code> keyword which is used only once outside a function, the
+          <code class="inline-code">await</code> keyword can be used multiple times inside asynchronous functions.
+          <code class="inline-code">await</code> will pause further code execution until the Promise settles and returns a result.
+          This is extremely useful when doing things like making API requests, where there's a chance that the data won't
+          be returned immediately.  As an example, I'll use the <code class="inline-code">setTimeout()</code>
+          method, which will serve as a mock API request:
+        </p>
+        <pre><code class="language-javascript">
+const sayHi = async () => {
+  const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("hi");
+    }, 3000);
+  });
+
+  let greeting = await promise;
+
+  console.log(greeting);
+};
+
+sayHi();
+// hi
+        </code></pre>
+        <p class="content-text">
+          ...here, an asynchronous function <code class="inline-code">sayHi</code> is created.  Inside the function is a
+          promise that resolves with a value of <code class="inline-code">hi</code> after 3 seconds.  We can pretend this
+          is a slow API request.  Since the data inside <code class="inline-code">promise</code>
+          takes a while to arrive, we must wait until the Promise settles before continuing code execution.
+          In order to do this, we use the <code class="inline-code">await</code> keyword.  Do note: JavaScript execution
+          will only pause inside said asynchronous function; other tasks and events will continue to be executed, making
+          it super efficient and resourceful.
+        </p>
+
+        <h3 class="content-subheading">Handling errors</h3>
+        <p class="content-text">
+          It'd be nice if programs alway ran without any errors, but this isn't the case.  Sometimes you'll encounter errors, so it's
+          important to know how to deal with them.  Luckily, errors can easily be caught by using the
+          <code class="inline-code">try...catch</code> statement.
+        </p>
+
+        <p class="content-text">
+          The <code class="inline-code">try...catch</code> statement contains two blocks: <code class="inline-code">try</code>
+          and <code class="inline-code">catch</code>.  Anything inside the <code class="inline-code">try</code> block will
+          be executed first, and if an error occurs, the <code class="inline-code">catch</code> block will fire.  Here's a more
+          realistic example using the Fetch API to grab data from a nonexistent endpoint:
+        </p>
+        <pre><code class="language-javascript">
+const someData = async () => {
+  try {
+    const response = await fetch("https://some-endpoint");
+    const data = await response.json();
+    console.log(data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+someData();
+// TypeError: Failed to fetch
+        </code></pre>
+        <p class="content-text">
+          ...when <code class="inline-code">someData</code> is invoked, JavaScript will first attempt to access the
+          endpoint, return the data, and log it; if that fails, an error will be logged to the console.  Since the
+          used resource is fake, the <code class="inline-code">try</code> block will fail and
+           fire the <code class="inline-code">catch</code> block.
+        </p>
+
+        <p class="content-text">
+          Although <code class="inline-code">async/await</code> is used for asynchronous operations, the actual syntax
+          looks synchronous, which makes it super clean and concise.  Additionally, it also helps get rid of promise chaining altogether.
+          Despite this, you should still know how to use both methods in case you ever need to use one or the other.
+        </p>
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
