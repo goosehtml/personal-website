@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link href="../../theme.css" type="text/css" rel="stylesheet" />
+    <script defer src="../../code-block-theme.js"></script>
+    <link id="code-block-theme" rel="stylesheet" href="" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>Passing by value vs. passing by reference</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">Passing by value vs. passing by reference</h1>
+        <p id="post-subheading">
+          Understanding the difference between both can prevent unnecessary bugs in your codebase
+        </p>
+        <p id="post-date">Published Aug. 8, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">What's the difference?</h3>
+        <p class="content-text">
+          Assigning things in JavaScript seems simple, but there's a little more that occurs behind the scenes that
+          changes how assignment works.  There's two ways of passing variables — by value and by reference.
+        </p>
+
+        <p class="content-text">
+          Knowing when which occurs can easily be identified: passing by value occurs when dealing with any
+          primitive data types (string, number, boolean, etc.), whereas passing by reference occurs when dealing with
+          anything that is not a primitive data type (arrays and objects).
+        </p>
+
+        <h3 class="content-subheading">Passing by value</h3>
+        <p class="content-text">
+          First, let's look at passing by value by creating a simple variable:
+        </p>
+        <pre><code class="language-javascript">
+let a = 1;
+        </code></pre>
+        <p class="content-text">
+          ...whenever anything is assigned in Javascript, it's allocated in memory.  If we were to take a look inside
+          the memory, it would look something like this...
+        </p>
+        <table class="content-table">
+            <tr>
+                <th>Variable</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>a</td>
+                <td>1</td>
+            </tr>
+        </table>
+        <p class="content-text">
+          ...nothing unexpected.  Let's add more to our code...
+        </p>
+        <pre><code class="language-javascript">
+let a = 1;
+let b = a;
+let b = b + 7
+        </code></pre>
+        <p class="content-text">
+        ...<code class="inline-code">b</code> is assigned the value of <code class="inline-code">a</code>, which is
+        <code class="inline-code">1</code>.  Then, we add <code class="inline-code">7</code> to <code class="inline-code">b</code>.
+        Let's look at the memory...
+        </p>
+        <table class="content-table">
+            <tr>
+                <th>Variable</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>a</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>b</td>
+                <td>8</td>
+            </tr>
+        </table>
+        <p class="content-text">
+        ...wait, how come <code class="inline-code">a</code> didn't change if we assigned it to <code class="inline-code">b</code>
+        and then added <code class="inline-code">7</code>?  Well, the <code class="inline-code">1</code> in <code class="inline-code">a</code>
+        and the <code class="inline-code">1</code> in <code class="inline-code">b</code> are two completely separate values.
+        They don't share the same piece of memory, so therefore, <code class="inline-code">a</code> isn't mutated when we add
+        <code class="inline-code">7</code> to <code class="inline-code">b</code>.
+        </p>
+
+        <h3 class="content-subheading">Passing by reference</h3>
+        <p class="content-text">
+          In the previous example we saw that primitive data types are passed by value, so each value gets its own distinct piece
+          of memory.  Simple to understand.  This time, let's play around with a non-primitive data type, more specifically, an array:
+        </p>
+        <pre><code class="language-javascript">
+let x = [1, 2, 3];
+        </code></pre>
+        <p class="content-text">
+          ...if we take a look at this array in memory, it'll look something like this...
+        </p>
+        <table class="content-table">
+            <tr>
+                <th>Variable</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>x</td>
+                <td>0x01</td>
+            </tr>
+        </table>
+        <p class="content-text">
+          ...wait, shouldn't the value of <code class="inline-code">x</code> be <code class="inline-code">[1, 2, 3]</code>?
+          Well, yes, but it doesn't get the value directly like primitive data types do.  Instead, the value is a reference to an
+          address allocated in memory which holds the value, like so...
+        </p>
+        <table class="content-table">
+            <tr>
+                <th>Address</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>0x01</td>
+                <td>[1, 2, 3]</td>
+            </tr>
+        </table>
+        <p class="content-text">
+          ...now what if we try to duplicate and mutate the array like in the previous example...
+        </p>
+        <pre><code class="language-javascript">
+let x = [1, 2, 3];
+let y = x;
+y.push(4);
+        </code></pre>
+        <p class="content-text">
+          ...let's have a look at the memory...
+        </p>
+        <table class="content-table">
+            <tr>
+                <th>Variable</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>x</td>
+                <td>0x01</td>
+            </tr>
+            <tr>
+                <td>y</td>
+                <td>0x01</td>
+            </tr>
+        </table>
+        <p class="content-text">
+          ...this time, they both reference the same memory address; because of this, the changes made to
+          <code class="inline-code">y</code> will also be applied
+          to <code class="inline-code">x</code>...
+        </p>
+        <table class="content-table">
+            <tr>
+                <th>Address</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>0x01</td>
+                <td>[1, 2, 3, 4]</td>
+            </tr>
+        </table>
+        <pre><code class="language-javascript">
+console.log(x);
+// [1, 2, 3, 4]
+
+console.log(y);
+// [1, 2, 3, 4]
+        </code></pre>
+        <p class="content-text">
+          ...as you might guess, this can present a lot of confusing bugs if you don't understand how passing works.
+          If you try to change one variable, it might completely change another as well.
+        </p>
+
+        <p class="content-text">
+          What if we duplicate the array again, but this time we completely overwrite it afterwards?  Let's have a look:
+        </p>
+        <pre><code class="language-javascript">
+let x = [1, 2, 3];
+let y = x;
+y = [4, 5, 6];
+        </code></pre>
+        <p class="content-text">
+          ...this time, the variable is overwritten entirely, so a completely new memory address is allocated...
+        </p>
+        <table class="content-table">
+            <tr>
+                <th>Variable</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>x</td>
+                <td>0x01</td>
+            </tr>
+            <tr>
+                <td>y</td>
+                <td>0x02</td>
+            </tr>
+        </table>
+        <p class="content-text">
+          ...and each holds their own value...
+        </p>
+        <table class="content-table">
+            <tr>
+                <th>Address</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>0x01</td>
+                <td>[1, 2, 3]</td>
+            </tr>
+            <tr>
+                <td>0x02</td>
+                <td>[4, 5, 6]</td>
+            </tr>
+        </table>
+        <p class="content-text">
+          ...since each value has its own memory address, both <code class="inline-code">x</code>
+          or <code class="inline-code">y</code> can be modified without affecting one another.
+        </p>
+
+        <p class="content-text">
+          To prove this concept even further, I'll use the equality operator in order to compare two arrays:
+        </p>
+        <pre><code class="language-javascript">
+let x = [1, 2, 3]; // 0x01
+let y = [1, 2, 3]; // 0x02
+
+x == y // false
+x === y // false
+        </code></pre>
+        <p class="content-text">
+          ...in this example, I've created two variables that hold the same value.  Despite this, they both return as
+          <code class="inline-code">false</code> when compared with both equality operators (remember, <code class="inline-code">==</code>
+          only checks for value equality, whereas <code class="inline-code">===</code> checks for value equality AND data type equality).
+          This occurs because the values being compared are the memory addresses, not the actual values.  Since the memory
+          addresses are completely different, the comparison outputs to <code class="inline-code">false</code>. 
+        </p>
+
+        <p class="content-text">
+          To output to <code class="inline-code">true</code>, both variables must share the same memory address, like so:
+        </p>
+        <pre><code class="language-javascript">
+let x = [1, 2, 3]; // 0x01
+let y = x; // 0x01
+
+x == y // true
+x === y // true
+        </code></pre>
+        <p class="content-text">
+          ...both <code class="inline-code">x</code> and <code class="inline-code">y</code> share the same memory address
+          of <code class="inline-code">0x01</code>,
+          so this returns <code class="inline-code">true</code>.
+        </p>
+
+        <p class="content-text">
+          Understanding whether something is passed by value or passed by reference is incredibly important.  It'll help
+          prevent a lot of weird bugs down the road, and it's helpful to know when mutating or duplicating pieces of data.
+          Remember, passing by value occurs when dealing with primitive data types, and passing by reference occurs
+          when dealing with arrays and objects.
+        </p>
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>

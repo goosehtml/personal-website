@@ -63,6 +63,26 @@ body {
   color: var(--secondary-color);
 }
 
+.content-table {
+  font-family: "Roboto", sans-serif;
+  font-size: 1.125rem;
+}
+
+th {
+  color: var(--primary-color);
+}
+
+td {
+  color: var(--secondary-color);
+}
+
+td,
+th {
+  border: 1px solid var(--horizontal-line);
+  text-align: center;
+  width: 200px;
+}
+
 .content-image {
   max-width: 100%;
 }
