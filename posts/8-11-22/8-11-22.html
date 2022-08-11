@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link href="../../theme.css" type="text/css" rel="stylesheet" />
+    <script defer src="../../code-block-theme.js"></script>
+    <link id="code-block-theme" rel="stylesheet" href="" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>How scope and variables work in JavaScript</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">How scope and variables work in JavaScript</h1>
+        <p id="post-subheading">
+          Brief overview on the different variable declaration keywords and how they affect scope
+        </p>
+        <p id="post-date">Published Aug. 11, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">What is scope?</h3>
+        <p class="content-text">
+          Scope in JavaScript is similar to an actual scope in real life.  Whenever you look through a scope, you can only see
+          a certain part of what's around you.  Similarly, scope in JavaScript simply refers to the current context of the
+          code; it determines where variables can be accessed.  The two main types of scope are global and local.  A
+          locally-scoped variable can either be function scope or block scope, but that'll be covered later.
+          For now, let's look at global and local scope.
+        </p>
+
+        <h3 class="content-subheading">Global scope</h3>
+        <pre><code class="language-javascript">
+// script.js
+var msg = 'hello!';
+
+function sayHi() {
+}
+        </code></pre>
+        <p class="content-text">
+          ...here, the variable <code class="inline-code">msg</code> is declared at the top of the script, outside of any functions.
+          Because of this, the variable is globally-scoped.  When a variable is in the global scope, it can be accessed from anywhere,
+          including inside of functions...
+        </p>
+        <pre><code class="language-javascript">
+// script.js
+var msg = 'hello!';
+
+function sayHi() {
+    return msg;
+}
+
+console.log(sayHi()); // hello!
+        </code></pre>
+        <p class="content-text">
+          ...as you can see, the function returns the value without any issues.  This is where global scope differentiates
+          from local scope.
+        </p>
+
+        <h3 class="content-subheading">Local scope</h3>
+        <p class="content-text">
+          Unlike global scope, local scope works a little differently.  Using the same example, let's move the variable
+          inside the function:
+        </p>
+        <pre><code class="language-javascript">
+// script.js
+function sayHi() {
+    var msg = 'hello!';
+    return msg;
+}
+
+console.log(sayHi()); // hello!
+        </code></pre>
+        <p class="content-text">
+          ...everything works the same, but now the <code class="inline-code">msg</code> variable is in the local scope.  This
+          means the variable can only be accessed within that function.  If we try accessing the variable outside the
+          <code class="inline-code">sayHi()</code> function, it'll throw an error...
+        </p>
+        <pre><code class="language-javascript">
+// script.js
+function sayHi() {
+    var msg = 'hello!';
+}
+
+console.log(msg); // UncaughtReferenceError: msg is not defined
+        </code></pre>
+        <p class="content-text">
+          ...since this produces an error, you may be inclined to believe this is bad, so you might decide to
+          declare everything globally.  Well, believe it or not, you WANT these type of errors.
+        </p>
+
+        <p class="content-text">
+          Declaring every single variable globally isn't the best idea.  For one, it uses up more resources, which can throttle the
+          performance of bigger applications.  Additionally, it doesn't make a lot of sense; if you need to use a variable
+          inside a function, declare it inside that function — why would you declare it outside?
+        </p>
+
+        <h3 class="content-subheading">Function scope and block scope</h3>
+        <p class="content-text">
+          Now that we covered global scope and local scope, we can talk about function scope and block scope, which are two
+          types of local scope.  To put it simply, a variable is in function scope when it's declared inside a function:
+        </p>
+        <pre><code class="language-javascript">
+// script.js
+function sayHi() {
+    var msg = 'hello!';
+}
+        </code></pre>
+        <p class="content-text">
+          ...simple enough, right?  On the other hand, if you declare a variable in something like a conditional statement or
+          loop, then it's considered to be in block scope...
+        </p>
+        <pre><code class="language-javascript">
+// script.js
+if (true) {
+    var msg = 'hello!';
+}
+        </code></pre>
+        <p class="content-text">
+          ...since both of these examples are locally-scoped, both should throw an error if
+          <code class="inline-code">msg</code> is accessed from the outside, right?  Let's find out...
+        </p>
+        <pre><code class="language-javascript">
+// script.js
+function sayHi() {
+    var msg = 'hello!';
+}
+console.log(msg); // UncaughtReferenceError: msg is not defined
+
+if (true) {
+    var msg = 'hello!';
+}
+console.log(msg); // hello!
+        </code></pre>
+        <p class="content-text">
+          ...wait a second, how come the conditional statement doesn't throw an error, despite <code class="inline-code">msg</code>
+          being locally-scoped?  The reason for this is hoisting.  Hoisting is a whole different topic that I'll cover in a separate
+          article; for now, you just need to know that we don't want this type of behavior.  We want block scope variables to behave the
+          same way as function scope variables, being accessible only from within the curly braces.  The solution to this?  The
+          <code class="inline-code">let</code> and <code class="inline-code">const</code> keywords.
+        </p>
+
+        <h3 class="content-subheading">let keyword</h3>
+        <p class="content-text">
+          Let's try running the conditional statement from earlier again, this time using the <code class="inline-code">let</code>
+          keyword instead of <code class="inline-code">var</code>:
+        </p>
+        <pre><code class="language-javascript">
+// script.js
+if (true) {
+    let msg = 'hello!';
+}
+console.log(msg); // UncaughtReferenceError: msg is not defined
+        </code></pre>
+        <p class="content-text">
+          ...awesome!  Now it behaves like a true local scope variable.  <code class="inline-code">let</code> is essentially
+          the replacement for <code class="inline-code">var</code>.  There's no reason to declare variables with the
+          <code class="inline-code">var</code> keyword anymore — it can cause a lot of unwanted bugs and it's
+          a syntax that's long outdated.  Avoid using <code class="inline-code">var</code> and opt for <code class="inline-code">let</code>
+          or <code class="inline-code">const</code> instead, which we're about to cover.
+        </p>
+
+        <h3 class="content-subheading">const keyword</h3>
+        <p class="content-text">
+          Along with the addition of the <code class="inline-code">let</code> keyword, <code class="inline-code">const</code> was also introduced to JavaScript.
+          <code class="inline-code">const</code> is a way to assign an identifier that won't be changed, a "constant".  Whereas variables
+          declared with the <code class="inline-code">let</code> keyword can be reassigned, variables declared with <code class="inline-code">const</code>
+          cannot.  Here's an example:
+        </p>
+        <pre><code class="language-javascript">
+let age = 12;
+age = 14;
+console.log(age); // 14
+
+const ANIMAL = 'dog';
+ANIMAL = 'cat'; // UncaughtTypeError: Assignment to constant variable
+        </code></pre>
+        <p class="content-text">
+          ...<code class="inline-code">age</code> is declared with the <code class="inline-code">let</code> keyword, therefore it can be reassigned without
+          a problem.  If we try to reassign <code class="inline-code">ANIMAL</code>, it'll throw an error.  Typically, it's best practice to declare
+          <code class="inline-code">const</code> variables using all-uppercase letters.
+        </p>
+
+        <p class="content-text">
+          One final thing to note is that unlike the <code class="inline-code">var</code> keyword (which you shouldn't use),
+          neither <code class="inline-code">let</code> or <code class="inline-code">const</code> can be re-declared:
+        </p>
+        <pre><code class="language-javascript">
+var msg = 'hello';
+var msg = 'bye';
+console.log(msg);
+// bye
+
+let age = 12;
+let age = 14;
+// UncaughtSyntaxError: Identifier 'age' has already been declared
+
+const ANIMAL = 'dog';
+const ANIMAL = 'cat';
+// UncaughtSyntaxError: Identifier 'ANIMAL' has already been declared
+        </code></pre>
+        
+        <p class="content-text">
+          ...to summarize, use <code class="inline-code">let</code> for identifiers that might change, and <code class="inline-code">const</code>
+          for identifiers that'll remain constant.  Avoid using <code class="inline-code">var</code> at all costs!
+        </p>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
