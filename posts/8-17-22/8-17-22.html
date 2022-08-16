@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link href="../../theme.css" type="text/css" rel="stylesheet" />
+    <script defer src="../../code-block-theme.js"></script>
+    <link id="code-block-theme" rel="stylesheet" href="" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>Using "this" keyword with call(), apply(), and bind()</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">Using "this" keyword with call(), apply(), and bind()</h1>
+        <p id="post-subheading">
+          Article explaining what the "this" keyword is and how to explicitly bind it with three different methods
+        </p>
+        <p id="post-date">Published Aug. 17, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">What is "this"?</h3>
+        <p class="content-text">
+          In a nutshell, <code class="inline-code">this</code> is a keyword in JavaScript that holds a reference
+          to the object that you're currently working with.  It's a lot easier to understand with a visual example:
+        </p>
+        <pre><code class="language-javascript">
+class Human {
+  constructor(gender, age) {
+    this.gender = gender;
+    this.age = age;
+  }
+}
+
+const man = new Human("male", 23);
+const woman = new Human("female", 26);
+
+console.log(man.gender); // male
+console.log(woman.gender); // female
+        </code></pre>
+        <p class="content-text">
+          ...here, a <code class="inline-code">Human</code> class with two properties is initialized.  We then create two instances
+          of that class: <code class="inline-code">man</code> and <code class="inline-code">woman</code>.  In the context of
+          <code class="inline-code">man</code>, <code class="inline-code">this</code> refers to that object, so it becomes
+          <code class="inline-code">man.gender</code> and <code class="inline-code">man.age</code>.  In the context of
+          <code class="inline-code">woman</code>, <code class="inline-code">this</code> refers to
+          <code class="inline-code">woman.gender</code> and <code class="inline-code">woman.age</code>.
+        </p>
+
+        <p class="content-text">
+          <code class="inline-code">this</code> simply refers to the object that's currently using the constructor.  This
+          is all done implicitly, but what if we want to explicity control what <code class="inline-code">this</code> refers to?
+        </p>
+
+        <h3 class="content-subheading">call(), apply(), and bind()</h3>
+        <p class="content-text">
+          By default, the <code class="inline-code">this</code> keyword is implicitly defined by its context, giving you no
+          control over what it refers to, although it can be controlled by explicitly defining it with one of three methods —
+           <code class="inline-code">call()</code>, <code class="inline-code">apply()</code>, or
+           <code class="inline-code">bind()</code>.  Let's start with the <code class="inline-code">call()</code> method:
+        </p>
+        <pre><code class="language-javascript">
+const movie = {
+  title: "The Dark Knight",
+  releaseDate: 2008,
+};
+
+function showMovieDetails() {
+  console.log(`${this.title} was released in ${this.releaseDate}.`);
+}
+
+showMovieDetails();
+// undefined was released in undefined.
+        </code></pre>
+        <p class="content-text">
+          ...when <code class="inline-code">showMovieDetails</code> is invoked, the console logs the <code class="inline-code">title</code>
+          and <code class="inline-code">releaseDate</code> as <code class="inline-code">undefined</code>, which makes sense because
+          the <code class="inline-code">showMovieDetails</code> function has nothing to do with the <code class="inline-code">movie</code>
+          object, so <code class="inline-code">this</code> holds no context.  Luckily, we can use the <code class="inline-code">call()</code>
+          method to assign the the properties of <code class="inline-code">movie</code> to <code class="inline-code">this</code>...
+        </p>
+        <pre><code class="language-javascript">
+showMovieDetails.call(movie);
+// The Dark Knight was released in 2008.
+        </code></pre>
+        <p class="content-text">
+          ...the <code class="inline-code">call()</code> method takes in the name of the object that you want to assign the
+          <code class="inline-code">this</code> keyword to.  Pretty simple, right?  The <code class="inline-code">apply()</code>
+          method is super similar...
+        </p>
+        <pre><code class="language-javascript">
+showMovieDetails.apply(movie);
+// The Dark Knight was released in 2008.
+        </code></pre>
+        <p class="content-text">
+          ...what's the difference?  Well, let's add a bit more to our example...
+        </p>
+        <pre><code class="language-javascript">
+const movie = {
+  title: "The Dark Knight",
+  releaseDate: 2008,
+};
+
+function showMovieDetails(firstName, lastName) {
+  console.log(
+    `${this.title} was released in ${this.releaseDate}, and was directed by ${firstName} ${lastName}.`
+  );
+}
+
+showMovieDetails.call(movie, "Christopher", "Nolan");
+// The Dark Knight was released in 2008, and was directed by Christopher Nolan.
+
+showMovieDetails.apply(movie, "Christopher", "Nolan");
+// UncaughtTypeError: CreateListFromArrayLike called on non-object
+        </code></pre>
+        <p class="content-text">
+          ...the <code class="inline-code">showMovieDetails</code> function has two parameters now:
+          <code class="inline-code">firstName</code> and <code class="inline-code">lastName</code>.
+          Both <code class="inline-code">call()</code> and <code class="inline-code">apply()</code>
+          can receive additional arguments, but how come the <code class="inline-code">apply()</code> method throws an
+          error?  Well, the only difference between both methods is that <code class="inline-code">apply()</code> takes
+          in arguments as an array, whereas <code class="inline-code">call()</code> receives them individually...
+        </p>
+        <pre><code class="language-javascript">
+showMovieDetails.call(movie, "Christopher", "Nolan");
+// The Dark Knight was released in 2008, and was directed by Christopher Nolan.
+
+showMovieDetails.apply(movie, ["Christopher", "Nolan"]);
+// The Dark Knight was released in 2008, and was directed by Christopher Nolan.
+        </code></pre>
+        <p class="content-text">
+          ...whereas <code class="inline-code">call()</code> and <code class="inline-code">apply()</code> immediately invoke the specified
+          function with the given value, the <code class="inline-code">bind()</code> method works a little differently.  Instead,
+          it returns a new function that when invoked, uses the given value...
+        </p>
+          <pre><code class="language-javascript">
+const batmanFacts = showMovieDetails.bind(movie, "Christopher", "Nolan");
+batmanFacts();
+// The Dark Knight was released in 2008, and was directed by Christopher Nolan.
+        </code></pre>
+        <p class="content-text">
+          ...this gives us the liberty to invoke the <code class="inline-code">batmanFacts()</code> function anywhere in our program
+          while preserving the context of <code class="inline-code">this</code>, which in this case is the <code class="inline-code">movie</code>
+          object.
+        </p>
+
+        <p class="content-text">
+          To summarize, <code class="inline-code">call()</code>, <code class="inline-code">apply()</code>, and
+          <code class="inline-code">bind()</code> are all used to control what the <code class="inline-code">this</code>
+          keyword refers to.  <code class="inline-code">call()</code> takes in arguments individually, whereas
+          <code class="inline-code">apply()</code> takes them in as an array.  Both of these methods immediately invoke the function,
+          unlike <code class="inline-code">bind()</code>, which returns a new function that can be executed later.
+        </p>
+
+
+
+
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
