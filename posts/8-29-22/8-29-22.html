@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link href="../../theme.css" type="text/css" rel="stylesheet" />
+    <script defer src="../../code-block-theme.js"></script>
+    <link id="code-block-theme" rel="stylesheet" href="" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>The numerous ways to loop over an array</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">The numerous ways to loop over an array</h1>
+        <p id="post-subheading">
+          Clearing up the confusion on which syntax to use when performing loops in JavaScript
+        </p>
+        <p id="post-date">Published Aug. 29, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">"for" loop and "for/in"</h3>
+        <p class="content-text">
+          As you might already know, JavaScript is a language that allows you to perform loops, which is where a block of code
+          is ran over and over again until a certain condition is met; this process is also referred to as "iteration".  The most
+          commonly-used type of loop that most people are used to seeing is a <code class="inline-code">for</code> loop:
+        </p>
+        <pre><code class="language-javascript">
+const alphabet = ["a", "b", "c", "d", "e"];
+
+for (let i = 0; i < alphabet.length; i++) {
+  console.log(alphabet[i]);
+}
+// a
+// b
+// c
+// d
+// e
+        </code></pre>
+        <p class="content-text">
+          ...this <code class="inline-code">for</code> loop says, "Initialize <code class="inline-code">i</code>
+          with a value of <code class="inline-code">0</code>.  Log a letter from the <code class="inline-code">alphabet</code>
+          array each iteration; continue doing this until <code class="inline-code">i</code> is greater than the length of
+          the array."
+        </p>
+
+        <p class="content-text">
+          A regular <code class="inline-code">for</code> loop gives you access to the index in the array, but not the actual
+          element, which is why I retrieved each element by passing in each iteration value as the index.  The
+          <code class="inline-code">for/in</code> statement works similarly:
+        </p>
+        <pre><code class="language-javascript">
+const arr = ["a", "b", "c", "d", "e"];
+
+for (let i in arr) {
+  console.log(i);
+}
+// 0
+// 1
+// 2
+// 3
+// 4
+        </code></pre>
+        <p class="content-text">
+          ...this loop only gives you access to the index of the current iterable, not the actual element.
+        </p>
+
+        <h3 class="content-subheading">"forEach()" and "for/of"</h3>
+        <p class="content-text">
+          Unlike the <code class="inline-code">for</code> and <code class="inline-code">for/in</code> loop,
+          <code class="inline-code">forEach()</code> and <code class="inline-code">for/of</code> actually give you access to the
+          array element.  Additionally, <code class="inline-code">forEach()</code> also lets you access the index by passing it
+          as a second argument:
+        </p>
+        <pre><code class="language-javascript">
+const arr = ["a", "b", "c", "d", "e"];
+
+arr.forEach((letter, i) => {
+  console.log(`Index ${i} holds letter ${letter}.`);
+});
+// Index 0 holds letter a.
+// Index 1 holds letter b.
+// Index 2 holds letter c.
+// Index 3 holds letter d.
+// Index 4 holds letter e.
+        </code></pre>
+        <p class="content-text">
+          ...<code class="inline-code">for/of</code> is similar to <code class="inline-code">forEach()</code>, except it doesn't
+          let you access the index...
+        </p>
+        <pre><code class="language-javascript">
+const arr = ["a", "b", "c", "d", "e"];
+
+for (let letter of arr) {
+  console.log(letter);
+}
+// a
+// b
+// c
+// d
+// e
+        </code></pre>
+        <p class="content-text">
+          ...generally, <code class="inline-code">for/of</code> is the best way to perform iterations.  The syntax is much more
+          concise than a traditional <code class="inline-code">for</code> loop, making it easier to set up and use.  The only downside
+          to <code class="inline-code">for/of</code> is that you can't directly access the index, in which case a
+          regular <code class="inline-code">for</code> loop will suffice.
+        </p>
+        <p class="content-text">
+          Remember, JavaScript is a huge language where there's more than one way to accomplish something, so there's
+          always a different tool for each task.  Play around and see what works best.
+        </p>
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
