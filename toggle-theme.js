@@ -29,3 +29,10 @@ const toggleTheme = () => {
 };
 
 themeButton.addEventListener("click", toggleTheme);
+
+
+const groceriesArray = JSON.parse(localStorage.getItem("groceries"));
+const newGroceries = ['corn', 'pasta'];
+const updatedArray = [...groceriesArray, ...newGroceries];
+localStorage.setItem("groceries", JSON.stringify(updatedArray));
+

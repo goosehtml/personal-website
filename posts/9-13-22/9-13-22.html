@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link href="../../theme.css" type="text/css" rel="stylesheet" />
+    <script defer src="../../code-block-theme.js"></script>
+    <link id="code-block-theme" rel="stylesheet" href="" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>Saving data with the Web Storage API</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">Saving data with the Web Storage API</h1>
+        <p id="post-subheading">
+          Quick tutorial on how to use the Web Storage API to save strings of data
+        </p>
+        <p id="post-date">Published Sept. 13, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">What is the Web Storage API?</h3>
+        <p class="content-text">
+          Whenever you're creating applications, sometimes you'll want to save certain chunks of data.  Before HTML5,
+          data was usually stored in cookies.  Nowadays, the Web Storage API exists, which is faster and more secure.  The
+          Web Storage API is a set of mechanisms that allows you to store and retrieve key/value pairs.  It contains two
+          mechanisms: <code class="inline-code">sessionStorage</code> and <code class="inline-code">localStorage</code>.
+          So when should you use which?
+        </p>
+        <p class="content-text">
+          To put it simply, <code class="inline-code">sessionStorage</code> data only remains for that specific session;
+          once you close out of the browser, the data is gone.  <code class="inline-code">localStorage</code> works differently —
+          the data persists even after the browser is closed.  The only way to remove it is by clearing the browser cache.
+        </p>
+        <p class="content-text">
+          Ideally, the Web Storage API should only be used for storing publicly available information.  Anything private
+          or sensitive should NEVER be stored on the client-side.
+        </p>
+
+        <h3 class="content-subheading">Storing and retrieving data</h3>
+        <p class="content-text">
+          The syntax for using <code class="inline-code">sessionStorage</code> and <code class="inline-code">localStorage</code>
+          is exactly the same, so for the sake of simplicity I'll be using <code class="inline-code">localStorage</code> in
+          these examples.  There's a few methods that both of these mechanisms come with:
+        </p>
+        <ul class="content-list">
+             <li class="content-list"><code class="inline-code">setItem()</code>: Sets a key/value pair.</li>
+             <li class="content-list"><code class="inline-code">getItem()</code>: Retrieves a key/value pair.</li>
+             <li class="content-list"><code class="inline-code">removeItem()</code>: Removes a key/value pair.</li>
+             <li class="content-list"><code class="inline-code">clear()</code>: Clears the entire storage.</li>
+        </ul>
+        <p class="content-text">
+          To store an item in <code class="inline-code">localStorage</code>, give it a key and a value:
+        </p>
+        <pre><code class="language-javascript">
+localStorage.setItem('favoriteColor', 'green');
+        </code></pre>
+        <p class="content-text">
+          ...this stores an item <code class="inline-code">favoriteColor</code> with the value of <code class="inline-code">green</code>.
+          We can see the item added to the Web Storage API by opening the developer console on Chrome > Application
+          > Storage > Local Storage...
+        </p>
+        <img class="content-image" src="./images/setitem.png" alt="screenshot of localstorage setitem">
+        <p class="content-text">
+          ...the item can be retrieved by using the <code class="inline-code">getItem()</code> method and storing it inside
+          a variable...
+        </p>
+        <pre><code class="language-javascript">
+const cat = localStorage.getItem('favoriteColor');
+console.log(cat);
+// green
+        </code></pre>
+        <p class="content-text">
+          ...removing <code class="inline-code">favoriteColor</code> from <code class="inline-code">localStorage</code> is
+          easy too...
+        </p>
+        <pre><code class="language-javascript">
+localStorage.removeItem('favoriteColor');
+        </code></pre>
+        <p class="content-text">
+          ...now if you check the browser's web storage again, you'll see that it's empty.  Finally, using
+          <code class="inline-code">localStorage.clear()</code> will remove every item from storage.
+        </p>
+
+        <h3 class="content-subheading">Storing objects</h3>
+        <p class="content-text">
+          By default, both <code class="inline-code">sessionStorage</code> and <code class="inline-code">localStorage</code>
+          only allow string values, but this doesn't mean that storing objects is impossible.  If you're familiar with JSON,
+          then you should know JavaScript comes with two methods, <code class="inline-code">JSON.parse()</code> and
+          <code class="inline-code">JSON.stringify()</code>.
+        </p>
+        <p class="content-text">
+          <code class="inline-code">JSON.parse()</code> is used for turning JSON data to JavaScript objects, while
+          <code class="inline-code">JSON.stringify()</code> is used for turning JavaScript objects to strings.  Let's say
+          you have an array full of grocery items that you want to store:
+        </p>
+        <pre><code class="language-javascript">
+const items = ['apples', 'bread', 'milk', 'cheese'];
+        </code></pre>
+        <p class="content-text">
+          ...use <code class="inline-code">JSON.stringify()</code> with <code class="inline-code">setItem()</code> to store
+          this array as a string...
+        </p>
+        <pre><code class="language-javascript">
+localStorage.setItem('groceries', JSON.stringify(items));
+        </code></pre>
+        <img class="content-image" src="./images/stored-array.png" alt="screenshot of stored array">
+        <p class="content-text">
+          ...the array is saved in storage as a string, but what if we wanted to add a few more items to the array?  Well,
+          since we can't directly mutate the stringified array, it must be converted back to an object...
+        </p>
+        <pre><code class="language-javascript">
+const groceriesArray = JSON.parse(localStorage.getItem('groceries'));
+        </code></pre>
+        <p class="content-text">
+          ...now just add the new items by destructuring all the elements into a new array, and convert it back to a string...
+        </p>
+        <pre><code class="language-javascript">
+const groceriesArray = JSON.parse(localStorage.getItem('groceries'));
+const newGroceries = ['corn', 'pasta'];
+
+const updatedArray = [...groceriesArray, ...newGroceries];
+localStorage.setItem('groceries', JSON.stringify(updatedArray));
+        </code></pre>
+        <img class="content-image" src="./images/new-array.png" alt="screenshot of new array">
+        <p class="content-text">
+          ...and that's all there is to it!  Remember, you should only use the  Web Storage API for storing public information.
+          NEVER store private or sensitive data on the client-side, as anyone has access to it.
+        </p>
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
