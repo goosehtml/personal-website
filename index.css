@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "VT323", monospace;
+  font-family: "Montserrat", sans-serif;
   background-color: var(--background);
   position: relative;
   min-height: 100vh;
@@ -46,13 +46,13 @@ body {
 
 #main-heading {
   color: var(--primary-color);
-  font-size: 3.75rem;
+  font-size: 3rem;
   margin-top: 10px;
   margin-bottom: 5px;
 }
 
 #main-subheading {
-  font-size: 1.875rem;
+  font-size: 1.5rem;
   margin-top: 5px;
   margin-bottom: 5px;
   color: var(--secondary-color);
@@ -73,10 +73,6 @@ body {
 
 /** RESPONSIVE DESIGN - DESKTOP **/
 @media screen and (min-width: 1000px) {
-  #theme-button {
-    font-size: 1.5rem;
-  }
-
   #logo {
     max-width: 10%;
   }

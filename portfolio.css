@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "VT323", monospace;
+  font-family: "Montserrat", sans-serif;
   background-color: var(--background);
   position: relative;
   min-height: 100vh;
@@ -22,13 +22,13 @@ body {
 
 #portfolio-heading {
   color: var(--primary-color);
-  font-size: 3.75rem;
+  font-size: 2.25rem;
   margin-top: 10px;
   margin-bottom: 5px;
 }
 
 #portfolio-subheading {
-  font-size: 1.875rem;
+  font-size: 1.125rem;
   margin-top: 5px;
   margin-bottom: 10px;
   color: var(--secondary-color);
@@ -51,7 +51,6 @@ body {
   padding-top: 25px;
   padding-bottom: 25px;
   border-radius: 25px;
-  font-family: "Roboto", sans-serif;
   margin-top: 3.125em;
   margin-bottom: 3.125em;
 }
@@ -66,13 +65,14 @@ body {
 }
 
 .project-name {
-  font-family: "VT323", monospace;
+  font-size: 1.5rem;
   color: var(--primary-color);
   margin-bottom: 0;
 }
 
 .project-description,
 .project-technologies {
+  font-size: 1.125rem;
   color: var(--secondary-color);
 }
 
@@ -130,6 +130,14 @@ body {
 
 /** RESPONSIVE DESIGN - DESKTOP **/
 @media screen and (min-width: 1000px) {
+  #portfolio-heading {
+    font-size: 3rem;
+  }
+
+  #portfolio-subheading {
+    font-size: 1.5rem;
+  }
+
   .portfolio-container {
     padding-left: 150px;
     padding-right: 150px;

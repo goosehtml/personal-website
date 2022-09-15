@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "VT323", monospace;
+  font-family: "Montserrat", sans-serif;
   background-color: var(--background);
   position: relative;
   min-height: 100vh;
@@ -22,13 +22,13 @@ body {
 
 #post-heading {
   color: var(--primary-color);
-  font-size: 3.75rem;
+  font-size: 2.25rem;
   margin-top: 10px;
   margin-bottom: 5px;
 }
 
 #post-subheading {
-  font-size: 1.875rem;
+  font-size: 1.125rem;
   margin-top: 5px;
   margin-bottom: 10px;
   color: var(--secondary-color);
@@ -42,6 +42,7 @@ body {
 }
 
 .post-link {
+  font-size: 1.5rem;
   text-decoration: none;
   color: var(--secondary-color);
 }
@@ -51,6 +52,7 @@ body {
 }
 
 .post-date {
+  font-size: 1.125rem;
   color: var(--primary-color);
 }
 
@@ -99,6 +101,14 @@ hr {
   .all-posts-container {
     padding-left: 150px;
     padding-right: 150px;
+  }
+
+  #post-heading {
+    font-size: 3rem;
+  }
+
+  #post-subheading {
+    font-size: 1.5rem;
   }
 
   .post-link {
