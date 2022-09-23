@@ -8,10 +8,10 @@
 }
 
 .darkmode {
-  --primary-color: #96a38e;
-  --primary-color-hover: #788570;
+  --primary-color: #dd7777;
+  --primary-color-hover: #c65f5f;
   --secondary-color: #ffffff;
   --secondary-color-hover: #d1cdcd;
   --horizontal-line: #323232;
-  --background: #242424;
+  --background: #151515;
 }

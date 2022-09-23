@@ -29,4 +29,3 @@ const toggleTheme = () => {
 };
 
 themeButton.addEventListener("click", toggleTheme);
-
