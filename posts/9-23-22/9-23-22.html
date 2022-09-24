@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link href="../../theme.css" type="text/css" rel="stylesheet" />
+    <script defer src="../../code-block-theme.js"></script>
+    <link id="code-block-theme" rel="stylesheet" href="" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>ELI5: JavaScript closures and how they work</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">ELI5: JavaScript closures and how they work</h1>
+        <p id="post-subheading">
+          Simple explanation of one of the most confusing JavaScript concepts
+        </p>
+        <p id="post-date">Published Sept. 24, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">Why all the unclear examples?</h3>
+        <p class="content-text">
+          When it comes to computer science, a lot of people like to teach concepts by using unnecessarily complicated
+          examples (i.e. trying to teach recursion by using the Fibonacci sequence).  Sometimes this verbose way of
+          explaining things can leave beginners even more confused.  Closures are one of those topics that a lot of people
+          tend to obfuscate, when in reality they're quite simple to understand.
+        </p>
+        <p class="content-text">
+          Looking at the <a class="content-link" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures">MDN Web Docs</a>, a closure is
+          defined as this:
+        </p>
+        <img class="content-image" src="./images/mdn-closures.png" alt="definition of a closure">
+        <p class="content-text">
+          ...I don't know about you, but this sounds too technical, especially if you have no prior understanding of how
+          scope works, which brings us to the main point.
+        </p>
+        <p class="content-text">
+          In order to understand closures, you must first know how scoping works; after that, closures become
+          easy to understood.  I have a whole article dedicated explaining scope, which can be found
+          <a class="content-link" href="https://ismaelhuerta.com/posts/8-11-22/8-11-22">here</a>.
+        </p>
+
+        <h3 class="content-subheading">So what are closures?</h3>
+        <p class="content-text">
+          Take a look at this function:
+        </p>
+        <pre><code class="language-javascript">
+const outerFunction = () => {
+  let age = 23;
+  console.log(`Outer function age: ${age}`);
+
+  const innerFunction = () => {
+    console.log(`Inner function age: ${age}`);
+  };
+  innerFunction();
+};
+
+outerFunction();
+// Outer function age: 23
+// Inner function age: 23
+        </code></pre>
+        <p class="content-text">
+          ...in this example, we have a simple function that contains another function inside.  The outer function holds the
+          variable <code class="inline-code">age</code> and also invokes the inner function.
+          If you know how scope works, then you know <code class="inline-code">innerFunction</code> has access to its outer
+          scope, which is why it has access to <code class="inline-code">age</code>.
+        </p>
+        <p class="content-text">
+          A closure is when you define a function inside another function, and the inner function can access
+          anything declared inside the outer function.  That's it.  Why are they useful?  Because the inner function has access and preserves
+          the outer function's values, even if the outer function has already executed.  To show an example of that, let's modify
+          the code a little:
+        </p>
+        <pre><code class="language-javascript">
+const outerFunction = () => {
+  let age = 23;
+  console.log(`Outer function age: ${age}`);
+  const innerFunction = () => {
+    console.log(`Inner function age: ${(age += 2)}`);
+  };
+  return innerFunction;
+};
+
+const result = outerFunction();
+// Outer function age: 23
+        </code></pre>
+        <p class="content-text">
+          ...this time, instead invoking <code class="inline-code">innerFunction</code>, it's just being returned, so you
+          only get <code class="inline-code">outerFunction</code> printed to the console.
+          <code class="inline-code">result</code> holds the <code class="inline-code">innerFunction</code>, which can be
+          proved by logging it...
+        </p>
+        <pre><code class="language-javascript">
+console.log(result);
+/*
+() => {
+  console.log(`Inner function age: ${(age += 2)}`);
+};
+*/
+        </code></pre>
+        <p class="content-text">
+          ...so calling it should invoke <code class="inline-code">innerFunction</code>...
+        </p>
+        <pre><code class="language-javascript">
+result();
+// Inner function age: 25
+        </code></pre>
+        <p class="content-text">
+          ...even though <code class="inline-code">outerFunction</code> was already called and closed,
+          <code class="inline-code">innerFunction</code> still has access to its scope.  Furthermore, calling
+          <code class="inline-code">result</code> again will further increment <code class="inline-code">age</code>...
+        </p>
+        <pre><code class="language-javascript">
+result();
+result();
+// Inner function age: 25
+// Inner function age: 27
+        </code></pre>
+        <p class="content-text">
+          ...and that's all there is to it.
+        </p>
+        <p class="content-text">
+          Remember, a closure is where you define a function inside another function, and
+          the inner function can access anything declared inside the outer function.  The important part is knowing that
+          the inner function has access and preserves the outer function's values, even after the outer function has
+          closed.
+        </p>
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
