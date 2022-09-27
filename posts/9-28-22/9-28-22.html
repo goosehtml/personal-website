@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="../posts.css" type="text/css" rel="stylesheet" />
+    <link href="../../theme.css" type="text/css" rel="stylesheet" />
+    <script defer src="../../code-block-theme.js"></script>
+    <link id="code-block-theme" rel="stylesheet" href="" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>How short-circuit evaluation works</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">How short-circuit evaluation works</h1>
+        <p id="post-subheading">
+          The importance of understanding truthy/falsy values when using logical operators
+        </p>
+        <p id="post-date">Published Sept. 28, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">What are truthy and falsy values?</h3>
+        <p class="content-text">
+          It should be common knowledge that JavaScript has Booleans, which can either be true or false.  Truthy and falsy
+          values are similar; falsy values are values that are not false but become false when converted into a Boolean.
+          JavaScript has 5 falsy values:
+        </p>
+        <ul class="content-list">
+             <li class="content-list">0</li>
+             <li class="content-list">" "</li>
+             <li class="content-list">undefined</li>
+             <li class="content-list">null</li>
+             <li class="content-list">NaN</li>
+        </ul>
+        <p class="content-text">
+          ...on the other hand, truthy values are values that are not true but become true when converted, for example...
+        </p>
+        <ul class="content-list">
+             <li class="content-list">Any number that is not 0.</li>
+             <li class="content-list">Any string that is not empty.</li>
+        </ul>
+        <p class="content-text">
+          ...simple enough, right?
+        </p>
+
+        <h3 class="content-subheading">Converting truthy and falsy values</h3>
+        <p class="content-text">
+          In actual practice, truthy and falsy values will be implicitly converted to a Boolean, meaning type coercion is
+          automatically done in the background.  JavaScript executes type coercion on Booleans under the following
+          circumstances:
+        </p>
+        <ul class="content-list">
+             <li class="content-list">When using logical operators.</li>
+             <li class="content-list">In a logical context, for example, when using an <code class="inline-code">if/else</code>
+            statement.</li>
+        </ul>
+
+        <p class="content-text">
+          Here's an example of type coercion in an <code class="inline-code">if/else</code> statement:
+        </p>
+        <pre><code class="language-javascript">
+const friendGreeted = "Hello!";
+
+if (friendGreeted) {
+  console.log("Friend was polite and greeted.");
+} else {
+  console.log("Friend was rude and ignored.");
+}
+
+// Friend was polite and greeted.
+        </code></pre>
+        <p class="content-text">
+          ...<code class="inline-code">friendsGreeted</code> is a truthy value, so it's implicitly converted to
+          <code class="inline-code">true</code>, executing the first statement.  If  <code class="inline-code">friendsGreeted</code>
+          was an empty string, it would be a falsy value and execute the second statement instead.
+        </p>
+
+        <p class="content-text">
+          Explicitly converting truthy and falsy values is simple... there's two ways — either through the
+          <code class="inline-code">Boolean()</code> function or through the double bang (<code class="inline-code">!!</code>)
+          operator:
+        </p>
+        <pre><code class="language-javascript">
+Boolean(0) // false
+!!0 // false
+
+Boolean(undefined) // false
+!!undefined // false
+
+Boolean("John") // true
+!!"John" // true
+
+Boolean(6) // true
+!!6 // true
+        </code></pre>
+        <p class="content-text">
+          ...which one you decide to use is simply a matter of preference.  Personally, I like to use <code class="inline-code">!!</code>
+          because it looks a lot cleaner.
+        </p>
+
+        <h3 class="content-subheading">Logical operators and short-circuit evaluation</h3>
+        <p class="content-text">
+          JavaScript has 4 logical operators, but in this lesson we'll only be looking at two:
+        </p>
+        <ul class="content-list">
+             <li class="content-list">OR (<code class="inline-code">||</code>) operator</li>
+             <li class="content-list">AND (<code class="inline-code">&&</code>) operator</li>
+        </ul>
+        <p class="content-text">
+          ...logical operators evaluate from left to right.  Additionally, they can use any data type, return any data type,
+          and most importantly, they perform short-circuiting, also called "short-circuit evaluation".
+        </p>
+        <p class="content-text">
+          Short-circuit evaluation means that when a OR (<code class="inline-code">||</code>) expression is being evaluated, JavaScript will
+          stop further evaluation as soon as the first TRUTHY operand is found.  On the other hand, when a
+          AND (<code class="inline-code">&&</code>) expression is being evaluated, JavaScript will stop further evaluation
+          as soon as the first FALSY operand is found.
+        </p>
+
+        <h3 class="content-subheading">OR operator</h3>
+        <pre><code class="language-javascript">
+console.log("" || "John"); // John
+console.log(true || 0); // true
+console.log(undefined || null); // null
+        </code></pre>
+        <p class="content-text">
+          ...the first statement outputs <code class="inline-code">John</code> because <code class="inline-code">""</code>
+          is a falsy value, so JavaScript moves on and evaluates the second operand, which is truthy.  In the second
+          statement, <code class="inline-code">true</code> is already a truthy value, so it's immediately returned —
+          JavaScript doesn't bother checking <code class="inline-code">0</code>.  In the last statement,
+          <code class="inline-code">undefined</code> is a falsy value, so JavaScript moves on and returns
+          <code class="inline-code">null</code>, even though it's also a falsy value.
+        </p>
+        <p class="content-text">
+          Here's an example of short-circuit evaluation using multiple operands:
+        </p>
+        <pre><code class="language-javascript">
+console.log(undefined || 0 || "" || "John" || 23 || null));
+// John
+        </code></pre>
+        <p class="content-text">
+          ...<code class="inline-code">John</code> is returned because it's the first truthy value in this
+          chain of operations.  <code class="inline-code">John</code> short-circuits the rest of the evaluation, so
+          JavaScript doesn't bother evaluating <code class="inline-code">23</code> or <code class="inline-code">null</code>.
+        </p>
+
+        <h3 class="content-subheading">AND operator</h3>
+        <p class="content-text">
+          Unlike the OR (<code class="inline-code">||</code>) operator, the AND (<code class="inline-code">&&</code>)
+          operator works in the exact opposite way: it short-circuits as soon as the first falsy operand is found, like so:
+        </p>
+        <pre><code class="language-javascript">
+console.log(0 && "John"); // 0
+console.log(7 && "John"); // John
+        </code></pre>
+        <p class="content-text">
+          ...in the first statement, <code class="inline-code">0</code> is a falsy value, so it's immediately returned and
+          JavaScript doesn't bother checking <code class="inline-code">John</code>.  In the second statement,
+          <code class="inline-code">7</code> is a truthy value, so the evaluation continues to the next operand,
+          <code class="inline-code">John</code>, which is also a truthy value; it's the last operand in the chain of
+          operations though, so it's returned anyways.  Here's an example with multiple operands...
+        </p>
+        <pre><code class="language-javascript">
+console.log("Hello" && 23 && null && "John");
+// null
+        </code></pre>
+        <p class="content-text">
+          ...<code class="inline-code">null</code> is the first falsy operand in this chain of operation, so it's immediately
+          returned.
+        </p>
+
+        <p class="content-text">
+          To summarize, the OR (<code class="inline-code">||</code>) operator will return the first truthy value, or the
+          last value if all the operands are falsy; the AND (<code class="inline-code">&&</code>) operator will return
+          the first falsy value, or the last value if all the operands are truthy.
+        </p>
+
+        
+
+
+
+
+
+        
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">go back to homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
