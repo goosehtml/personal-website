@@ -121,7 +121,7 @@ code {
 }
 .homepage-link:hover {
   cursor: pointer;
-  color: var(--primary-color-hover);
+  font-weight: 600;
 }
 
 /** FOOTER SECTION **/

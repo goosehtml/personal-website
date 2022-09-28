@@ -9,19 +9,6 @@ body {
 }
 
 /** HEADER SECTION **/
-#theme-button {
-  background-color: transparent;
-  color: var(--primary-color);
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin-top: 5px;
-}
-
-#theme-button:hover {
-  cursor: pointer;
-  transform: scale(1.1);
-}
-
 .header-container {
   display: flex;
   height: 100vh;
@@ -30,12 +17,24 @@ body {
   justify-content: center;
 }
 
-#logo {
-  max-width: 25%;
-  animation: floating 2s alternate-reverse infinite;
+#main-heading {
+  color: var(--primary-color);
+  text-align: center;
+  font-size: 2.25rem;
+  margin-bottom: 5px;
+  animation: appear 2s alternate-reverse 1;
 }
 
-@keyframes floating {
+#main-title {
+  color: var(--horizontal-line);
+  text-align: center;
+  font-size: 1.125rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  animation: appear 2s alternate-reverse 1;
+}
+
+@keyframes appear {
   from {
     opacity: 1;
   }
@@ -44,19 +43,9 @@ body {
   }
 }
 
-#main-heading {
-  color: var(--primary-color);
-  font-size: 3rem;
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-
 #main-subheading {
-  font-size: 1.5rem;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  font-size: 1.125rem;
   color: var(--secondary-color);
-  text-align: center;
 }
 
 .publications-link,
@@ -68,12 +57,17 @@ body {
 .publications-link:hover,
 .portfolio-link:hover {
   cursor: pointer;
-  color: var(--secondary-color-hover);
+  font-weight: 600;
 }
 
 /** RESPONSIVE DESIGN - DESKTOP **/
 @media screen and (min-width: 1000px) {
-  #logo {
-    max-width: 10%;
+  #main-heading {
+    font-size: 3rem;
+  }
+
+  #main-title,
+  #main-subheading {
+    font-size: 1.5rem;
   }
 }

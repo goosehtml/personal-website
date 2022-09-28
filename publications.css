@@ -73,9 +73,10 @@ hr {
   text-decoration: none;
   color: var(--primary-color);
 }
+
 .homepage-link:hover {
   cursor: pointer;
-  color: var(--primary-color-hover);
+  font-weight: 600;
 }
 
 /** FOOTER SECTION **/
