@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="./posts.css" type="text/css" rel="stylesheet" />
+    <link href="../theme.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/base16/tomorrow-night.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script defer src="./test.js"></script>
+    <title>Conditional rendering in React</title>
+  </head>
+  <body>
+      <!-- BLOG HEADER SECTION -->
+    <header class="post-header-container">
+      <h1 id="post-heading">Conditional rendering in React</h1>
+        <p id="post-subheading">
+          Quick tutorial on how to conditionally render components inside of JSX
+        </p>
+        <p id="post-date">Published Oct. 5, 2022</p>
+    </header>
+
+    <!-- BLOG CONTENT SECTION -->
+    <section class="blog-content-container">
+
+      <article class="blog-post">
+        <h3 class="content-subheading">Why would you conditionally render something?</h3>
+        <p class="content-text">
+          Usually, most React components are hard-coded and don't rely on other events or data to render;
+          this isn't always the case though — sometimes you'll only want something to render when a certain condition is met.
+        </p>
+        <p class="content-text">
+          In vanilla JavaScript, anything conditional can usually be handled with an <code class="inline-code">if/else</code>
+          statement, but not in React; unfortunately, JSX doesn't allow the use of traditional conditional statements.
+        </p>
+
+        <h3 class="content-subheading">Conditional ternary operator</h3>
+        <p class="content-text">
+          So how do we get around this?  It's quite simple — in React, you conditionally render components within JSX
+          by using the conditional ternary operator.  The ternary operator is a shorthand syntax for writing
+          <code class="inline-code">if/else</code> statements, it's also the only JavaScript operator that takes three
+          operands.  Let's convert a traditional <code class="inline-code">if/else</code> statement to a ternary
+          expression:
+        </p>
+        <pre><code class="language-javascript">
+let greeting = true;
+
+if (greeting) {
+  console.log("Hello!");
+} else {
+  console.log("Goodbye!");
+}
+        </code></pre>
+        <p class="content-text">
+          ...converting this to a ternary expression is easy.  A ternary expression takes three operands: a condition
+          followed by a question mark (<code class="inline-code">?</code>), then an expression to execute if the condition
+          is truthy followed by a colon (<code class="inline-code">:</code>), and finally an expression to execute if
+          the condition is falsy.  It's better explained when visualized...
+        </p>
+        <pre><code class="language-javascript">
+let greeting = true;
+
+greeting === true ? console.log("Hello!") : console.log("Goodbye!");
+        </code></pre>
+        <p class="content-text">
+          ...as you can see, it's a lot more concise than using a traditional <code class="inline-code">if/else</code>
+          statement.
+        </p>
+
+        <h3 class="content-subheading">Conditionally rendering components</h3>
+        <p class="content-text">
+          Now that you understand how the ternary operator works, you can conditionally render components inside
+          of JSX.  Let's say you have a piece of state called <code class="inline-code">showMessage</code>
+          that holds an initial value of <code class="inline-code">false</code>.  Anytime the state changes to
+          <code class="inline-code">true</code>, we want a component called <code class="inline-code">Message</code> to
+          render in our application.  The piece of state will be controlled with a simple button.  Here's how that looks:
+        </p>
+        <pre><code class="language-jsx">
+// App.js
+import Message from &#x22;./Message&#x22;;
+import { useState } from &#x22;react&#x22;;
+
+const App = () =&#x3E; {
+  const [showMessage, setShowMessage] = useState(false);
+
+  const clickHandler = () => {
+    setShowMessage(!showMessage);
+  };
+
+  return (
+    &#x3C;div&#x3E;
+      &#x3C;button type=&#x22;button&#x22; onClick={clickHandler}&#x3E;
+        Toggle Message
+      &#x3C;/button&#x3E;
+      {showMessage ? &#x3C;Message /&#x3E; : ""}
+    &#x3C;/div&#x3E;
+  );
+};
+
+export default App;
+        </code></pre>
+        <pre><code class="language-jsx">
+// Message.js
+const Message = () =&#x3E; {
+  return (
+    &#x3C;&#x3E;
+      &#x3C;p&#x3E;Hello world!&#x3C;/p&#x3E;
+    &#x3C;/&#x3E;
+  );
+};
+
+export default Message;
+        </code></pre>
+        <p class="content-text">
+          ...whenever the button is clicked, <code class="inline-code">showMessage</code> will become <code class="inline-code">true</code>,
+          so the <code class="inline-code">Message</code> component will conditionally render on the screen and display
+          <code class="inline-code">Hello world!</code>.  Clicking the button again will change the state back to
+          <code class="inline-code">false</code>, therefore reevaluating the ternary expression and rendering nothing but an empty
+          string.
+        </p>
+
+        <p class="content-text">
+          The ternary operator isn't the only way to conditionally render components in React — you can also use the logical
+          AND (<code class="inline-code">&&</code>) operator, like so:
+        </p>
+        <pre><code class="language-jsx">
+// App.js
+// ...
+{showMessage && &#x3C;Message /&#x3E;}
+// ...
+        </code></pre>
+        <p class="content-text">
+          ...if <code class="inline-code">showMessage</code> is <code class="inline-code">true</code>, it'll render the
+          <code class="inline-code">Message</code> component, otherwise it won't render anything at all.  I have a whole
+          article talking about logical operators and short-circuit evaluation, which you can find
+          <a class="content-link" href="./short-circuit-evaluation.html">here</a>.
+        </p>
+
+      </article>
+      
+      <nav class="navigation-container">
+        <p class="homepage-button">
+          <a class="homepage-link" href="../../index.html">homepage</a>
+        </p>
+      </nav>
+
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-container">
+      <p id="copyright">© Ismael Huerta | 2022</p>
+    </footer>
+  </body>
+</html>
